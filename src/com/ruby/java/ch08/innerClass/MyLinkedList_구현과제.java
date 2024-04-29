@@ -44,11 +44,16 @@ public class MyLinkedList_구현과제 {
 		if(head == null) {
 			return;
 		}
-		if(head.data.equals(data)) {
-			head = head.link;
-			return;
+		Node p = head, q = null;			//p,q로 인서트
+		while(p != null) {
+			if (p.data.equals(data)) {
+				q.link = p.link;
+				return;
+			}
+			q = p;
+			p = p.link;
 		}
-
+		
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
