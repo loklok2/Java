@@ -53,7 +53,6 @@ public class MyLinkedList_구현과제 {
 			q = p;
 			p = p.link;
 		}
-		
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
