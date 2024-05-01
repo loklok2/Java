@@ -1,7 +1,7 @@
 package com.ruby.java.ch08.innerClass;
 
 
-public class MyLinkedList_구현과제 {
+public class MyLinkedList_구현과제add {
 
 	private Node head = null;
 
@@ -56,7 +56,7 @@ public class MyLinkedList_구현과제 {
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MyLinkedList_구현과제 myList = new MyLinkedList_구현과제();
+		MyLinkedList_구현과제add myList = new MyLinkedList_구현과제add();
 		myList.printList();
 
 		myList.add("JAVA");
