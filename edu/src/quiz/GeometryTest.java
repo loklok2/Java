@@ -8,17 +8,7 @@ public class GeometryTest {
 		Line l = new Line();
 		Polyline pl = new Polyline();
 		TriAngle t = new TriAngle();
-		Rectangle r = new Rectangle();
-		
-		
-		
-		
-		
-		
-
-
-		
-		
+		Rectangle r = new Rectangle();	
 
 	}
 
