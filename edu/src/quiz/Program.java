@@ -13,8 +13,8 @@ public class Program {
 //		PrimeNumber2 pn2 = new PrimeNumber2();
 //		pn2.work(true);
 
-		PrimeNumber3 pn3 = new PrimeNumber3();
-		pn3.work(true);
+//		PrimeNumber3 pn3 = new PrimeNumber3();
+//		pn3.work(true);
 	
 		
 		
