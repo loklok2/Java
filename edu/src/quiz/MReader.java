@@ -48,7 +48,7 @@ public class MReader {
 //	    int colsB = b[0].length;					// 열길이
 //
 //	    int[][] c = new int[rowsA][colsB];			//두 행렬의 초기화
-		int[][]matrix = new int[a.length][b[0].length];
+		int[][]caclmatrix = new int[a.length][b[0].length];
 		for (int i = 0; i <a.length; i++) {
 			for(int j = 0; j < b.length; j++) {
 				int c = 0;
