@@ -83,7 +83,7 @@ public class Test_ch10_lotto당첨처리 {
 		//당첨번호 추첨
 		//6개는 hashset으로 하고 보너스는 따로 작성
 		HashSet<Integer> win = new HashSet<>();
-		for (int j = 0; win.size() < 7; j++) {//6개 번호와 보너스 번호
+		for (int j = 0; win.size() < 6; j++) {//6개 번호와 보너스 번호
 			win.add(number.nextInt(46));
 		}
 		System.out.print("당첨번호: " + win);//6개의 당첨번호와 보너스번호

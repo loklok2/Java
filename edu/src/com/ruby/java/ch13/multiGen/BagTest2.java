@@ -43,7 +43,7 @@ class PencilCase {
 class Notebook {
 }
 
-public class BagTest {
+public class BagTest2 {
 
 	public static void main(String[] args) {
 
