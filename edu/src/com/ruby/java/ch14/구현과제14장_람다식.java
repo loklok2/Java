@@ -44,6 +44,10 @@ public class 구현과제14장_람다식 {
 			System.out.println(obj);
 		}
 	}
+	static void sortStudents(Student[] sArray, Comparator<Student> comparator) {
+		Arrays.sort(sArray, comparator);
+		
+	}
 	static void showStudents(String msg, Object[]data) {
 		System.out.println(msg + " : ");
 		for(Object obj : data) {
@@ -107,10 +111,17 @@ public class 구현과제14장_람다식 {
         Collections.sort(sList, (s1,s2)->s1.sname.compareTo(s2.sname));
         showStudents("sname 정렬후", sList);
         
-//        showStudents("sno 정렬전", sArray);
-//        sortStudents()
-//        //문제5: sortStudents()를 사용한 sArray 정렬 - sno 사용
-//        showStudents("sname 정렬후", sArray);
+        showStudents("sno 정렬전", sArray);
+        //문제5: sortStudents()를 사용한 sArray 정렬 - sno 사용
+        sortStudents(sArray, new Comparator<Student>() {
+			@Override
+			public int compare(Student s1, Student s2) {
+	        	int sno1 = Integer.parseInt(s1.getSno());
+				int sno2 = Integer.parseInt(s2.getSno());
+	        	return Integer.compare(sno1,sno2);	
+			}
+        });
+        showStudents("sname 정렬후", sArray);
 	}
 
 }
