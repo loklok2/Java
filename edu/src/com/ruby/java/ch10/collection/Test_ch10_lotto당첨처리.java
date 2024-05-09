@@ -49,7 +49,7 @@ public class Test_ch10_lotto당첨처리 {
 		for (int i = 0; i < n; i++) {  															 //n=10000, lot변수가 10000개 복권을 갖고 있어야함
 			lotto = new HashSet<>();
 			while (lotto.size() < 7) {
-				lotto.add(number.nextInt(46));
+				lotto.add(number.nextInt(45)+1);
 			}
 			List<Integer> L = new ArrayList<>(lotto);
 			Collections.sort(L);
@@ -62,7 +62,7 @@ public class Test_ch10_lotto당첨처리 {
 		for (HashSet<Integer> eachLotto : lot) {
 			lotto = new HashSet<Integer>(); //복권 1장
 			for (int j = 0; lotto.size() < 7; j++) {	//6개 이하 난수 생성
-				lotto.add(number.nextInt(46));			
+				lotto.add(number.nextInt(45)+1);			
 			}
 			List<Integer> lottoList = new ArrayList<>(lotto);
             // 로또 복권을 정렬
@@ -84,7 +84,7 @@ public class Test_ch10_lotto당첨처리 {
 		//6개는 hashset으로 하고 보너스는 따로 작성
 		HashSet<Integer> win = new HashSet<>();
 		for (int j = 0; win.size() < 6; j++) {//6개 번호와 보너스 번호
-			win.add(number.nextInt(46));
+			win.add(number.nextInt(45)+1);
 		}
 		System.out.print("당첨번호: " + win);//6개의 당첨번호와 보너스번호
 		// 6개를 맞힌 복권을 찾는다 
