@@ -1,8 +1,6 @@
 package test;
 
 
-import java.util.Arrays;
-
 //5번 실습 - 2장 실습 2-10를 수정하여 객체 배열의 정렬 구현 교재88p
 class PhyscData implements Comparable<PhyscData>{
 	String name;
@@ -31,12 +29,15 @@ class PhyscData implements Comparable<PhyscData>{
 		return result;
 		//교재 123p
 	}
-//	@Override
-//	public boolean equals(Object p) {
-//		return true;
-//		//return (int)(this.name.compareTo(p.name));
-//
-//	}
+	@Override
+	public boolean equals(Object p) {
+		if (this == p) return true;
+		if (p == null || getClass() != p.getClass()) return false;
+		PhyscData physcData = (PhyscData) p;
+		return vision == physcData.vision && name.equals(physcData.name);
+		
+
+	}
 }
 //data[i].compareTo(data[i]) > 0
 public class Test_실습2_14객체배열정렬 {
