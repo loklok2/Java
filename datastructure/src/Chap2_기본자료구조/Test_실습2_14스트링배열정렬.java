@@ -1,5 +1,6 @@
 package Chap2_기본자료구조;
 
+import java.util.Arrays;
 
 public class Test_실습2_14스트링배열정렬 {
 	public static void main(String[] args) {
@@ -9,7 +10,7 @@ public class Test_실습2_14스트링배열정렬 {
 		sortData(data);
 		showData("정렬후", data);
 		String[] newData = insertString(data, "banana");
-		showData("삽입후", data);
+		showData("삽입후", newData);
 		
 	}
 
@@ -35,10 +36,19 @@ public class Test_실습2_14스트링배열정렬 {
     }
 
 	static String[] insertString(String[] data, String string){//배열의 사이즈를 1개 증가시킨후 insert되는 스트링 보다 큰 값들은 우측으로 이동, 사이즈가 증가된 스트링 배열을 리턴
-		int i = 0;
-		while(i < data.length && data[i].compareTo(string) < 0) {
-			i++;
+		String[] newData = Arrays.copyOf(data, data.length + 1 );
+		int index;
+		for (index = 0; index < data.length; index++) {
+			if(data[index].compareTo(string)>0) {
+				break;
+			}
 		}
+		for (int i = newData.length -1; i > index; i--) {
+			newData[i] = newData[i - 1];
+		}
+		newData[index] = string;
+		
+		return newData;
 		
 	}
 }

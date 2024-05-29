@@ -71,9 +71,11 @@ public class train_실습2_6다차원배열 {
 
 	}
 	static double[][] addMatrix(double[][] A, double[][] B) {//행렬 덧셈 결과를 리턴
-		double [][]C = new double[2][3];
-		for(int i = 0; i < A.length; i++ ) {
-			for(int j = 0; j < A[0].length; j++) {
+		int rows = A.length;
+	    int cols = A[0].length;
+		double [][]C = new double[rows][cols];
+		for(int i = 0; i < rows; i++ ) {
+			for(int j = 0; j < cols; j++) {
 				C[i][j] = A[i][j] + B[i][j];
 			}
 		}

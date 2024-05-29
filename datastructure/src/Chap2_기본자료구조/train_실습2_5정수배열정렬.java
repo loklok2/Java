@@ -54,14 +54,14 @@ public class train_실습2_5정수배열정렬 {
 		}
 	}
 	static void insertData(float[]data, float realData) {//insert되는 실수 값이 insert될 위치를 찾아 보다 큰 값은 우측으로 이동
-		int index = 0;
-		while (index < top && data[index] < realData) {
-			index++;
+		int i = 0;
+		while (i < top && data[i] < realData) {
+			i++;
 		}
-		for(int i = top; i > index; i--) {
-			data[i] = data[i-1];
+		for(int j = top; j > i; j--) {
+			data[j] = data[j-1];
 		}
-		data[index] = realData;
+		data[i] = realData;
 		top++;
 	}
 
