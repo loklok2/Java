@@ -2,12 +2,13 @@ package Chap3_검색;
 /*
  * 3장 5번 실습과제 - 스트링 리스트 정렬
  * 리스트를 배열로 변환후 중복제거후 다시 리스트 만들기 등 실습
+ * 리스트 정렬 찾고 merge
  */
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-public class train_스트링리스트정렬 {
-
+public class train_실습5_스트링리스트정렬 {
+			//compareTo if(compareTo(b)>0)
 	    public static String[] removeElement1(String[] arr, String item) {}
 	    
 	    static void getList(List<String> list) {
@@ -26,7 +27,12 @@ public class train_스트링리스트정렬 {
 
 	    }
 	    static void sortList(List<String> list) {
-
+	    	//배열의 구현과 리스트의 구현의 차이를 remove.add 사용불가
+	    	//리스트를 배열로 변환
+	    	list.toArray();
+	    	// 배열에서 중복제거
+	    	// 배열에서 정렬
+	    	//배열을 리스트로 저장
 	    }
 	    
 	    static String[] removeDuplicateList(List<String> list) {

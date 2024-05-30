@@ -9,21 +9,41 @@ import java.util.Comparator;
  */
 
 class PhyscData3 {
-	String name;
-	int height;
-	double vision;
+	 private String name;
+	 private int height;
+	 private double vision;
+	public String getName() {
+		return name;
+	}
 
 }
 class NameOrder implements Comparator<PhyscData3>{
 
+	@Override
+	public int compare(PhyscData3 p1, PhyscData3 p2) {
+		
+		return p1.name.compareTo(p2.name);
+	}
+
 }
 class HeightOrder implements Comparator<PhyscData3>{
+
+	public int compare(PhyscData3 p1, PhyscData3 p2) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
 class VisionOrder implements Comparator<PhyscData3>{
 
+	@Override
+	public int compare(PhyscData3 p1, PhyscData3 p2) {
+		// TODO Auto-generated method stub
+		return (int)(p1.vision -p2.vision);
+	}
+
 }
-public class train실습3_8객체비교연산자 {	
+public class train_실습4_8객체비교연산자 {	
 	static final Comparator<PhyscData3> HEIGHT_ORDER = new HeightOrder();
 
 	public static void main(String[] args) {
@@ -38,14 +58,15 @@ public class train실습3_8객체비교연산자 {
 		};
 		showData("정렬전 객체 배열", data);
 		Arrays.sort(data, HEIGHT_ORDER);
+		Arrays.sor
 		
 		showData("height로 정렬후 객체 배열", data);
 		PhyscData3 key = new PhyscData3("길동", 167, 0.2);
 		
 		int idx = Arrays.binarySearch(data, key, HEIGHT_ORDER);
-		System.out.println("\nArrays.binarySearch(): result = " + idx);
+		System.out.println("\nArrays.binarySearch(): result = " + idx);   //124p
 		
-		Arrays.sort(data, new VisionOrder());
+		Arrays.sort(data, new VisionOrder());//익명객체 
 		showData("vision로 정렬후 객체 배열", data);
 		
 		Arrays.sort(data, new Comparator<PhyscData3>() {

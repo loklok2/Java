@@ -8,25 +8,25 @@ package Chap3_검색;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-public class train_실습3_4정수배열이진탐색 {
+public class train_실습1_4정수배열이진탐색 {
 
 	public static void main(String[] args) {
 		int []data = new int[30];
 		inputData(data);// 구현 반복 숙달 훈련 - 100 이하 난수를 생성
-		showList("정렬 전 배열[]:: ", data);
+		showList("\n정렬 전 배열[]:: ", data);
 		Arrays.sort(data);
-		showList("정렬 후 배열[]:: ", data);// 구현 반복 숙달 훈련
+		showList("\n정렬 후 배열[]:: ", data);// 구현 반복 숙달 훈련
 
 		int key = new Random().nextInt();
 		boolean resultIndex = linearSearch(data, key);//교재 99-100:실습 3-1 참조, 교재 102: 실습 3-2
-		//Arrays 클래스에 linear search는 없기 때문에 구현해야 한다 
+		//Arrays 클래스에 linearSearch는 없기 때문에 구현해야 한다 
 		System.out.println("\nlinearSearch(13): key = " + key + ", result = " + resultIndex);
 
 		key = new Random().nextInt();
 		/*
 		 * 교재 109~113
 		 */
-		resultIndex = binarySearch(data, key);//함수 구현이 필요
+		resultIndex = binarySearch(data, key);//함수 구현이 필요 109p
 		System.out.println("\nbinarySearch(19): key = " + key + ", result = " + resultIndex);
 		
 		key = new Random().nextInt();
@@ -39,16 +39,16 @@ public class train_실습3_4정수배열이진탐색 {
 	}
 
 	static boolean binarySearch(int[] data, int key) {
-		int n = 0;
-		int n1 = data.length - 1;
-		while(n <= n1) {
-			int nm = (n + n1) /2;
-			if(data[nm] == key) {
+		int low = 0;
+		int high = data.length - 1;
+		while(low <= high) {
+			int mid = (low + high) /2;
+			if(data[mid] == key) {
 				return true;
-			}else if (data[nm] < key) {
-				n = nm +1;
+			}else if (data[mid] < key) {
+				low = mid +1;
 			}else {
-				n1 = nm -1;
+				high = mid -1;
 			}
 		}
 		return false;
