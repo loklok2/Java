@@ -12,34 +12,48 @@ class PhyscData3 {
 	 private String name;
 	 private int height;
 	 private double vision;
+	public PhyscData3(String name, int height, double vision) {
+		this.name = name;
+		this.height = height;
+		this.vision = vision;
+	}
+
 	public String getName() {
 		return name;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	public double getVision() {
+		return vision;
 	}
 
 }
 class NameOrder implements Comparator<PhyscData3>{
-
 	@Override
 	public int compare(PhyscData3 p1, PhyscData3 p2) {
-		
-		return p1.name.compareTo(p2.name);
+		return p1.getName().compareTo(p2.getName());
 	}
 
 }
 class HeightOrder implements Comparator<PhyscData3>{
-
 	public int compare(PhyscData3 p1, PhyscData3 p2) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+        if (p1.getHeight() > p2.getHeight()) {
+            return 1;
+        } else if (p1.getHeight() < p2.getHeight()) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
 }
 class VisionOrder implements Comparator<PhyscData3>{
-
 	@Override
 	public int compare(PhyscData3 p1, PhyscData3 p2) {
-		// TODO Auto-generated method stub
-		return (int)(p1.vision -p2.vision);
+//		return (int)(p1.getVision() - p2.getVision());   //int 로 비교하면 소주점 이하 정보가 없어져서 비교가 불가능함
+		return Double.compare(p1.getVision(),p2.getVision());
 	}
 
 }
@@ -58,7 +72,7 @@ public class train_실습4_8객체비교연산자 {
 		};
 		showData("정렬전 객체 배열", data);
 		Arrays.sort(data, HEIGHT_ORDER);
-		Arrays.sor
+		showData("정렬후 객체 배열", data);
 		
 		showData("height로 정렬후 객체 배열", data);
 		PhyscData3 key = new PhyscData3("길동", 167, 0.2);
@@ -77,5 +91,13 @@ public class train_실습4_8객체비교연산자 {
 		});
 		showData("name로 정렬후 객체 배열", data);
 	}
+	
+	 static void showData(String msg, PhyscData3[] data) {
+		 System.out.println(msg);
+		 for (PhyscData3 d : data) {
+			 System.out.println(d.getName() + " " + d.getHeight() + " " + d.getVision());
+	        }
+		 System.out.println();
+	    }
 
 }

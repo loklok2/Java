@@ -1,6 +1,8 @@
 package test;
 
+import java.util.Arrays;
 import java.util.Comparator;
+
 
 /*
  * 3장 과제2 : 객체 배열 정렬/검색 - 람다식사용
@@ -17,11 +19,36 @@ class Fruit4 {
 	String name;
 	int price;
 	String expire;
+	public Fruit4(String name, int price, String expire) {
+		this.name = name;
+		this.price = price;
+		this.expire = expire;
+	}
+	public String getName() {
+		return name;
+	}
+	public int getPrice() {
+		return price;
+	}
+	public String toString() {
+		return name + price;
+	}
 
 }
 //교재 123~129 페이지 참조하여 구현
-class FruitName implements Comparator<Fruit4>{}
-class FruitPrice implements Comparator<Fruit4>{}
+class FruitName implements Comparator<Fruit4>{
+
+	@Override
+	public int compare(Fruit4 f1, Fruit4 f2) {
+		int result = f1.name.compareTo(f2.name);
+		return result;
+	}}
+class FruitPrice implements Comparator<Fruit4>{
+	@Override
+	public int compare(Fruit4 f1, Fruit4 f2) {
+		int result = Integer.compare(f1.price, f2.price);
+		return result;
+	}}
 
 public class Test_실습3_7객체배열이진탐색 {
 
@@ -66,23 +93,10 @@ public class Test_실습3_7객체배열이진탐색 {
 		showData("name comparator - 익명 객체를 사용한 정렬:", arr);
 		
 		//익명 클래스를 사용한 comparator 객체
-		Comparator<Fruit4> cc_name = new Comparator<Fruit4>() {// 익명클래스 사용
+		Comparator<Fruit4> cc_name = (f1,f2) -> f1.getName().compareTo(f2.getName());// 익명클래스 사용
+		
+		Comparator<Fruit4> cc_price = Comparator.comparingInt(Fruit4::getPrice);
 
-			@Override
-			public int compare(Fruit4 f1, Fruit4 f2) {
-				// TODO Auto-generated method stub
-				return (f1.name.compareTo(f2.name));
-			}
-
-		};
-		Comparator<Fruit4> cc_price = new Comparator<Fruit4>() {
-
-			@Override
-			public int compare(Fruit4 f1, Fruit4 f2) {
-				return f1.getPrice() - f2.getPrice();
-			}// 익명클래스 사용
-
-		};
 
 		Fruit4 newFruit4 = new Fruit4("수박", 880, "2023-5-18");
 		/*
@@ -97,6 +111,32 @@ public class Test_실습3_7객체배열이진탐색 {
 		sortData(arr, cc_price);
 		System.out.println("\ncomparator 정렬(가격)후 객체 배열: ");
 		showData("comparator를 사용한 정렬후:", arr);	
+	}
+
+	private static void showData(String string, Fruit4[] arr) {
+		System.out.println(string + ":");
+		for (Fruit4 item : arr) {
+			System.out.println(item + " ");
+		}
+		System.out.println();
+		
+	}
+
+	static int binarySearch(Fruit4[] arr, Fruit4 newFruit4, Comparator<Fruit4> cc_price) {
+		 int l = 0;
+		 int r = arr.length - 1;
+		 while (l <= r) {
+			 int mid = (l + r) / 2;
+		     int comparevalue = cc_price.compare(arr[mid], newFruit4);
+		     if (comparevalue == 0) {
+		    	 return mid;
+		     } else if (comparevalue < 0) {
+		         l = mid + 1;
+		     } else {
+		         r = mid - 1;
+		     }
+		  }
+		  return -1;
 	}
 }
 
