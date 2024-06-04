@@ -60,7 +60,7 @@ class objectQueue2 {
         que = new Point3[maxlen];
         front = rear = num = 0;
 	}
-
+//--- 큐에 데이터를 인큐 ---//
     public int enque(Point3 x) throws OverflowQueueException {
         if (num >= capacity)  //큐가 풀인지 확인
             throw new OverflowQueueException(); //가득차면 예외ㄱㄱ
@@ -70,7 +70,7 @@ class objectQueue2 {
             rear = 0;
         return 0;
     }
-
+ //--- 큐에서 데이터를 디큐 ---//
     public Point3 deque() throws EmptyQueueException {
         if (num <= 0)   //큐가 비었는지 확인
             throw new EmptyQueueException(); //비었으면 예외
@@ -80,17 +80,17 @@ class objectQueue2 {
             front = 0;
         return x; 		//가져온 x 리턴
     }
-
+//--- 큐에서 데이터를 피크(프런트 데이터를 들여다봄) ---//
     public Point3 peek() throws EmptyQueueException {
         if (num <= 0) // 큐 비었는지 확인
             throw new EmptyQueueException(); //비어있으면 예외 ㄱㄱ
         return que[front];	//front 인덱스 데이터 리턴
     }
-
+//--- 큐를 비움 ---//
     public void clear() {
         num = front = rear = 0;  //데이터와 인덱스 초기화
     }
-
+//--- 큐에서 x를 검색하여 인덱스(찾지 못하면 –1)를 반환 ---//
     public int indexOf(Point3 x) {
         for (int i = 0; i < num; i++) {
             int idx = (front + i) % capacity; //원형큐에서 실제 인덱스 계산방법임 
@@ -99,23 +99,23 @@ class objectQueue2 {
         }
         return -1;	//못찾았으니까 -1 리턴
     }
-
+//--- 큐의 크기를 반환 ---//
     public int getCapacity() {
         return capacity;
     }
-
+//--- 큐에 쌓여 있는 데이터 개수를 반환 ---//
     public int size() {
         return num;
     }
-
+//--- 큐가 비어있는가? ---//
     public boolean isEmpty() {
         return num <= 0; 
     }
-
+//--- 큐가 가득 찼는가? ---//
     public boolean isFull() {
         return num >= capacity;
     }
-
+//--- 큐 안의 모든 데이터를 프런트 → 리어 순으로 출력 ---//
     public void dump() {
         for (int i = 0; i < num; i++) {
             int idx = (front + i) % capacity; //위에 indexof처럼 원형큐에서 실제 인덱스 계산
