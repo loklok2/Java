@@ -6,7 +6,7 @@ package test;
  */
 import java.util.Arrays;
 import java.util.List;
-public class Test_스트링배열합병 {
+public class Test_실습4_3스트링배열합병 {
     public static void main(String[] args) {
 	String[] s1 = {"홍길동", "강감찬", "을지문덕", "계백", "김유신", "최치원" };
 	String[] s2 = {"독도", "울릉도", "한산도", "영도", "오륙도", "동백섬"};

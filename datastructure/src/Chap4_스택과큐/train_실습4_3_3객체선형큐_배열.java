@@ -16,8 +16,8 @@ class Point3 { //이차원좌표
     private int iy;
 
     public Point3(int x, int y) { //생성자
-        ix = x;
-        iy = y;
+        this.ix = x;
+        this.iy = y;
     }
 
     public int getX() { //x값 리턴
@@ -27,6 +27,12 @@ class Point3 { //이차원좌표
     public int getY() {	//y값 리턴
         return iy;
     }
+    public void setX(int x) {
+		this.ix = x;
+	}
+	public void setY(int y) {
+		this.iy = y;
+	}
 
     @Override
     public String toString() { //좌표 string으로 리턴

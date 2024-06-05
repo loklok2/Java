@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
-public class Test_중복없는리스트합병 {
+public class Test_실습4_6중복없는리스트합병 {
     static ArrayList<String> removeDuplicate(ArrayList<String> al) {
         // 중복을 제거하는 함수
     	HashSet<String> set = new HashSet<>(al);
