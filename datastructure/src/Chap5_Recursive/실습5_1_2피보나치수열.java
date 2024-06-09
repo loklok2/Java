@@ -15,7 +15,7 @@ public class 실습5_1_2피보나치수열 {
  //--- 음이 아닌 정수 n의 팩토리얼 값을 반환 ---//
  static int fibonacci(int n) {
 	 //recursive 함수를 간결한 코딩으로 해결 - 학습 요점이다 
-     return (n > 1) ? fibonacci(n - 1) + fibonacci(n - 2) + fibonacci(n - 3) : 1;
+     return (n > 2) ? fibonacci(n - 1) + fibonacci(n - 2) + fibonacci(n - 3) : 1;
      //
  }
 
