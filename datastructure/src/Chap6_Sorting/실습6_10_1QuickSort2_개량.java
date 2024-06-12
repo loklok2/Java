@@ -1,33 +1,70 @@
 // 퀵 정렬(비재귀 버전)
 package Chap6_Sorting;
-//교재 232 실습 6-10을 수정
-import Chap6_Sorting.StackSorting.Stack3;
 
-//class Point {
-//	private int ix;
-//	private int iy;
-//
-//	public Point(int x, int y) {
-//		ix = x;
-//		iy = y;
-//	}
-//
-//	public int getX() {
-//		return ix;
-//	}
-//
-//	public int getY() {
-//		return iy;
-//	}
-//
-//	public void setX(int x) {
-//		ix = x;
-//	}
-//
-//	public void setY(int y) {
-//		iy = y;
-//	}
-//}
+import java.util.EmptyStackException;
+
+//교재 232 실습 6-10을 수정
+
+
+class Point {
+	private int ix;
+	private int iy;
+
+	public Point(int x, int y) {
+		ix = x;
+		iy = y;
+	}
+
+	public int getX() {
+		return ix;
+	}
+
+	public int getY() {
+		return iy;
+	}
+
+	public void setX(int x) {
+		ix = x;
+	}
+
+	public void setY(int y) {
+		iy = y;
+	}
+}
+
+class Stack3<T>{
+	private T[] stackArray;
+	private int top;
+	private int maxSize;		//maxsize나 capacity나 별차이 없지만 maxsize가 용량으로 보기에 직관적임
+	
+	public Stack3(int maxSize) {
+		this.maxSize = maxSize;
+		stackArray = (T[]) new Object[maxSize];  // 제네릭 타입은 배열로 생성할 수가 없다. 그래서 Object타입으로 형변환해서 생성하는거임
+		top = -1; // 스택은 비어있음 가장 위에 요소가 없으니까 -1로 설정
+	}
+
+	public void push(T item) {
+        if (isFull()) {
+            throw new StackOverflowError();
+        }
+        stackArray[++top] = item;
+    }
+
+    public T pop() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        return stackArray[top--];
+    }
+
+    public boolean isEmpty() {
+        return top == -1;
+    }
+
+    public boolean isFull() {
+        return top == maxSize - 1;
+    }
+}
 
 public class 실습6_10_1QuickSort2_개량 {
 
@@ -40,7 +77,6 @@ public class 실습6_10_1QuickSort2_개량 {
 
 	// --- 퀵 정렬(비재귀 버전)---//
 	static void quickSort(int[] a, int left, int right) {
-
 		Stack3<Point> st = new Stack3<>(10);
 		Point pt = new Point(left, right);
 		st.push(pt);

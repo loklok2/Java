@@ -26,8 +26,8 @@ class 실습6_9QuickSort {
          count++;
      } while (pl <= pr);
     // System.out.println("pl = " + pl + ", pr = " + pr);
-     if (left < pr)  quickSort(a, left, pr);
-     if (pl < right) quickSort(a, pl, right);
+     if (left < pr)  quickSort(a, left, pr); //왼쪽 정렬
+     if (pl < right) quickSort(a, pl, right); //오른쪽 정렬
 
  }
  static void showData(int[] d) {

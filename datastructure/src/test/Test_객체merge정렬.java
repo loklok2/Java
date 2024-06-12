@@ -1,9 +1,4 @@
-package Chap6_Sorting;
-
-
-
-}
-package Chap6_Sorting;
+package test;
 /*
  * 6장 구현 실습과제1 
  */

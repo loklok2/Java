@@ -23,7 +23,7 @@ class 실습6_1BubbleSort {
          {
         	 count++;
              if (a[j - 1] > a[j])//버블
-                 swap(a, j - 1, j);
+                 swap(a, j - 1, j); //straight exchange
          }
      System.out.println("\n비교 횟수 = " + count);
  }

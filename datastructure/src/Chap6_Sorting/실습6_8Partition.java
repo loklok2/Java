@@ -17,7 +17,7 @@ public class 실습6_8Partition {
      int pr = n - 1;    // 오른쪽 커서
      int x = a[n / 2];  // 피벗(가운데 요소)
 
-     do {
+     do {							//피벗을 중심으로 나누는 코드 
          while (a[pl] < x) pl++;
          while (a[pr] > x) pr--;
          System.out.println("pivot = " + x + ", pl = " + pl + ", pr= " + pr);

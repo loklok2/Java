@@ -4,235 +4,265 @@ package test;
  * 플라토의 미로 찾기 문제 설명 자료 학습
  * int input[12][15] 테이블에서 입구는 (0,0)이며 출구는 (11,14)임
  * 미로 테이블 (12,15)을 상하좌우 울타리를 친 maze[14][17]을 만들고 입구는 (1,1)이며 출구는(12,15)
- * stack을 사용한 backtracking 구현
+ * non-recursive알고리즘 -> stack을 사용한 backtracking 구현
+ * 정답: 지나간 경로만 그림 표시
  */
 
 import java.util.ArrayList;
 import java.util.List;
 
-import test.Stack4.EmptyGenericStackException;
-import test.Stack4.OverflowGenericStackException;
 
 //23.2.16 수정
 //23.2.24: 객체 배열 초기화, static 사용, 내부 클래스와 외부 클래스 사용 구분을 못하는 문제 => 선행 학습 필요
+
+//좌표를 나타내는 Items 클래스 정의
+
 enum Directions {N, NE, E, SE, S, SW, W, NW}
-class Items { // 이동할때 나타내는 좌표 
-	int x;	
+
+class Items {
+	int x;
 	int y;
 	int dir;
-	
-		Items(int x, int y, int dir){
-			this.x = x;	
-			this.y = y;
-			this.dir = dir;
-		}
+
+	public Items(int x, int y, int d) {
+		this.x = x;
+		this.y = y;
+		this.dir = d;
+	}
+
+	@Override
+	public String toString() {
+		return "x = " + x + ", y = " + y + ", dir = " + dir;
+	}
 }
-class Offsets {	// 이동할때 각 방향의 좌표변화 저장
+
+class Offsets {
 	int a;
 	int b;
-	
-		Offsets(int a, int b){
-			this.a = a;
-			this.b = b;
-		}
 
+	public Offsets(int a, int b) {
+		this.a = a;
+		this.b = b;
+	}
 }
+
 class StackList {
-    // ArrayList를 사용한 사용자 정의 스택 구현
+	private List<Items> data; // 스택용 배열
+	private int capacity; // 스택의 크기
+	private int top; // 스택 포인터
 
-    // 스택 연산을 위한 예외 클래스들
-    public class EmptyGenericStackException extends Exception {
-        private static final long serialVersionUID = 1L;
+	// --- 실행시 예외 : 스택이 비어있음 ---//
+	public class EmptyIntStackException extends RuntimeException {
+		
+		private static final long serialVersionUID = 1L;
+		
+		public EmptyIntStackException() {
+		}
+	}
 
-        public EmptyGenericStackException(String message) {
-            super(message);
-        }
-    }
+	// --- 실행시 예외 : 스택이 가득 참 ---//
+	public class OverflowIntStackException extends RuntimeException {
 
-    public class OverflowGenericStackException extends RuntimeException {
-        public OverflowGenericStackException(String message) {
-            super(message);
-        }
-    }
+		private static final long serialVersionUID = 1L;
 
-    private List<Items> data; // 스택 요소를 저장할 ArrayList
-    private int capacity; // 스택의 최대 용량
-    private int top; // 최상위 요소의 인덱스
+		public OverflowIntStackException() {
+		}
+	}
 
-    // 주어진 용량으로 스택을 초기화하는 생성자
-    public StackList(int capacity) {
-        this.capacity = capacity;
-        this.data = new ArrayList<>(capacity);
-        this.top = 0;
-    }
+	// --- 생성자(constructor) ---//
+	public StackList(int maxlen) {
+		top = 0;
+		capacity = maxlen;
+		try {
+			data = new ArrayList<>(0); // 스택 본체용 배열을 생성
+		} catch (OutOfMemoryError e) { // 생성할 수 없음
+			capacity = 0;
+		}
+	}
 
-    // 스택에 요소를 추가하는 push 연산
-    public boolean push(Items x) throws OverflowGenericStackException {
-        if (isFull()) {
-            throw new OverflowGenericStackException("스택이 가득 찼습니다.");
-        }
-        top++;
-        return data.add(x);
-    }
+	// --- 스택에 x를 푸시 ---//
+	public void push(Items p) throws OverflowIntStackException {
+		if (top >= capacity) // 스택이 가득 참
+			throw new OverflowIntStackException();
+		data.add(p);
+		top++;
+		return;
+	}
 
-    // 스택에서 최상위 요소를 제거하고 반환하는 pop 연산
-    public Items pop() throws EmptyGenericStackException {
-        if (isEmpty()) {
-            throw new EmptyGenericStackException("스택이 비어 있습니다.");
-        }
-        return data.remove(--top);
-    }
+	// --- 스택에서 데이터를 팝(정상에 있는 데이터를 꺼냄) ---//
+	public Items pop() throws EmptyIntStackException {
+		if (top <= 0) // 스택이 빔
+			throw new EmptyIntStackException();
+		return data.remove(--top);
+	}
 
-    // 스택의 최상위 요소를 반환하는 peek 연산
-    public Items peek() throws EmptyGenericStackException {
-        if (isEmpty()) {
-            throw new EmptyGenericStackException("스택이 비어 있습니다.");
-        }
-        return data.get(top - 1);
-    }
+	// --- 스택에서 데이터를 피크(peek, 정상에 있는 데이터를 들여다봄) ---//
+	public Items peek() throws EmptyIntStackException {
+		if (top <= 0) // 스택이 빔
+			throw new EmptyIntStackException();
+		return data.get(top - 1);
+	}
 
-    // 스택의 모든 요소를 제거하는 clear 연산
-    public void clear() {
-        top = 0;
-    }
+	// --- 스택을 비움 ---//
+	public void clear() {
+		top = 0;
+	}
 
-    // 특정 요소의 인덱스를 반환하는 indexOf 연산
-    public int indexOf(Items x) {
-        for (int i = top - 1; i >= 0; i--) {
-            if (data.get(i).equals(x)) {
-                return i;
-            }
-        }
-        return -1;
-    }
+	// --- 스택에서 x를 찾아 인덱스(벌견하지 못하면 –1)를 반환 ---//
+	public int indexOf(Items x) {
+		for (int i = top - 1; i >= 0; i--) // 정상 쪽에서 선형검색
+			if (data.get(i).equals(x))
+				return i; // 검색 성공
+		return -1; // 검색 실패
+	}
 
-    // 용량 및 스택 크기에 대한 getter 메서드들
-    public int getCapacity() {
-        return capacity;
-    }
+	// --- 스택의 크기를 반환 ---//
+	public int getCapacity() {
+		return capacity;
+	}
 
-    public int size() {
-        return top;
-    }
+	// --- 스택에 쌓여있는 데이터 갯수를 반환 ---//
+	public int size() {
+		return top;
+	}
 
-    // 스택이 비어 있는지 여부를 확인하는 isEmpty 연산
-    public boolean isEmpty() {
-        return top <= 0;
-    }
+	// --- 스택이 비어있는가? ---//
+	public boolean isEmpty() {
+		return top <= 0;
+	}
 
-    // 스택이 가득 찼는지 여부를 확인하는 isFull 연산
-    public boolean isFull() {
-        return top >= capacity;
-    }
+	// --- 스택이 가득 찼는가? ---//
+	public boolean isFull() {
+		return top >= capacity;
+	}
 
-    // 스택의 모든 요소를 출력하는 dump 연산
-    public void dump() throws EmptyGenericStackException {
-        if (isEmpty()) {
-            throw new EmptyGenericStackException("스택이 비어 있습니다.");
-        } else {
-            for (int i = 0; i < top; i++) {
-                System.out.print(data.get(i) + " ");
-            }
-            System.out.println();
-        }
-    }
+	// --- 스택 안의 모든 데이터를 바닥 → 정상 순서로 표시 ---//
+	public void dump() {
+		if (top <= 0)
+			System.out.println("스택이 비어있습니다.");
+		else {
+			for (int i = 0; i < top; i++)
+				System.out.println((i+1) + ": " + data.get(i) + " ");
+		}
+	}
 }
 
 public class Test_실습5_2미로찾기문제 {
-	static Offsets[] moves = new Offsets[8];//static을 선언하는 이유를 알아야 한다
-	StackList st = new StackList(100);
-	void path(int maze[][], int mark[][], int m, int p) {//m = 12, p = 15 
-	st.push(new Items(1,1,2));//출발점 (1,1), 이동 방향 dir = 2(2는 동쪽) 을 스택에 push
-	while (!st.isEmpty()) {
-		Items item = st.pop(); //스택에서 좌표가져오기
-		//(i,j,dir) = coordinates and direction deleted from top of stack;
-		int i = item.x;
-		int j = item.y;
-		int dir = item.dir;
-		//현재 위치 (i,j)에 대하여 mark[][]을 1로 설정
-		mark[i][j] = 1;
-		
-		while (dir < 8) {//8가지 방향중에서 남은 방향에 대하여
-			//(g,h) = coordinates of next move;
-			//현재 위치 (i,j)에 대하여 이동 방향 계산
-			int g = i + moves[dir].a;
-			int h = j + moves[dir].b;
-			//만약에 출구에 도착했을 경우 //success;
-			if ((g == m) && (h == p)) {
-			//(i,j)와 (g,h)에 대하여 mark 표시
-				mark[g][h] = 1;
-				return;
-			}
-			//벽이 아니고, 이전에 온적이 없는 곳이라면
-			if (maze[g][h] == 0 && mark[g][h] == 0) {
-				mark[g][h] = 1;
-				//다음 이동할 방향설정해서 push
-				//여기서부터는 동쪽으로 시도하니까 다음부터는 서쪽으로
-				st.push(new Items(i, j, (dir + 7) %8));
-				//다음 이동할 좌표 설정
-				i = g;
-				j = h;
-				dir = 0;// 북쪽부터 시도
-				//dir = next direction to try;
-				//add (i,j,dir) to top of stack;
-				// i = g; j = h; dir = N;
-			} else {
-	          dir++; //try next direction
-			}
-        }
 
-        // 현재 위치의 mark를 취소
-        mark[i][j] = 0;
-    }
+	static Offsets[] moves = new Offsets[8];// static을 선언하는 이유를 알아야 한다
 
-    // 출구를 찾지 못한 경우
-    System.out.println("No path found");
-}
+	public static void path(int[][] maze, int[][] mark, int ix, int iy) {
+
+			mark[1][1] = 1;
+			StackList st = new StackList(50);
+			Items temp = new Items(0, 0, 0);//N :: 0
+			temp.x = 1;
+			temp.y = 1;
+			temp.dir = 2;//E:: 2
+			mark[temp.x][temp.y] = 2;//미로 찾기 궤적은 2로 표시
+			st.push(temp);
+			int i = temp.x;
+			int j = temp.y;
+			int d = temp.dir;
+			while (!st.isEmpty()) {
+				if (i == ix && j == iy) {
+					st.dump();
+					return;
+				}
+				int g = i + moves[d].a;
+				int h = j + moves[d].b;
+				
+				if (maze[g][h] == 0 && mark[g][h] == 0) {
+					mark[i][j] = 2;
+					maze[i][j] = 1;
+					st.push(new Items(i, j, d));
+					i = g;
+					j = h;
+					d = 0;
+				}
+				else {
+					d++;
+					if (d == 8) {
+						mark[i][j] = 1;
+						maze[i][j] = 0;
+						if (!st.isEmpty()) {
+							temp = st.pop();
+							i = temp.x;
+							j = temp.y;
+							d = temp.dir + 1;
+						}
+					}
+				}
+			}
+			
+			System.out.println("no path in maze ");
+		}
+
+	static void show(int[][] d, int row, int col) {
+		for (int i = 0; i <= row; i++) {
+			for (int j = 0; j <= col; j++) {
+				System.out.print(d[i][j] + " ");
+
+			}
+			System.out.println();
+		}
+	}
 
 	public static void main(String[] args) {
 		int[][] maze = new int[14][17];
 		int[][] mark = new int[14][17];
 
 		int input[][] = { // 12 x 15
-				{ 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1 },
+				{ 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1 }, 
 				{ 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1 },
-				{ 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1 },
+				{ 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1 }, 
 				{ 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0 },
-				{ 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+				{ 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1 }, 
 				{ 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1 },
-				{ 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1 },
+				{ 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1 }, 
 				{ 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 },
-				{ 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1 },
+				{ 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1 }, 
 				{ 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0 },
-				{ 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0 },
-				{ 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0 }};
-		
-		moves[0].a = -1;	moves[0].b = 0;
-		moves[1].a = -1;	moves[1].b = 1;
-		moves[2].a = 0;		moves[2].b = 1;
-		moves[3].a = 1;		moves[3].b = 1;
-		moves[4].a = 1;		moves[4].b = 0;
-		moves[5].a = 1;		moves[5].b = -1;
-		moves[6].a = 0;		moves[6].b = -1;
-		moves[7].a = -1;	moves[7].b = -1;
-		//Directions d;
-		//d = Directions.N;
-		//d = d + 1;//java는 지원안됨
-		//maze 배열 초기화
+				{ 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0 }, 
+				{ 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0 } };
+		for (int ia = 0; ia < 8; ia++)
+			moves[ia] = new Offsets(0, 0);// 배열에 offsets 객체를 치환해야 한다.
+		moves[0].a = -1;
+		moves[0].b = 0;
+		moves[1].a = -1;
+		moves[1].b = 1;
+		moves[2].a = 0;
+		moves[2].b = 1;
+		moves[3].a = 1;
+		moves[3].b = 1;
+		moves[4].a = 1;
+		moves[4].b = 0;
+		moves[5].a = 1;
+		moves[5].b = -1;
+		moves[6].a = 0;
+		moves[6].b = -1;
+		moves[7].a = -1;
+		moves[7].b = -1;
+		// Directions d;
+		// d = Directions.N;
+		// d = d + 1;//java는 지원안됨
 		for (int i = 0; i < 14; i++) {
 			for (int j = 0; j < 17; j++) {
-				maze[i+1][j+1] = input[i][j];
-				//input[][]을 maze[][]로 복사
+				if(i == 0 || j == 0 || i == 13 || j == 16) maze[i][j]=1;
+				else maze[i][j]=input[i-1][j-1];
+				mark[i][j]=0;
+				// input[][]을 maze[][]로 변환
 			}
 		}
-
-		show("maze[12,15]::", maze);
-		show("mark[12,15]::", mark);
-
+		
+		System.out.println("maze[12,15]::");
+		show(maze, 13, 16);
+		System.out.println("mark::");
+		show(mark, 13, 16);
 		path(maze, mark, 12, 15);
-		show("maze[12,15]::", maze);
-		show("mark[12,15]::", mark);
-
-
+		System.out.println("maze[12,15]::");
+		show(maze, 13, 16);
+		System.out.println("mark::");
+		show(mark, 13, 16);
 	}
 }

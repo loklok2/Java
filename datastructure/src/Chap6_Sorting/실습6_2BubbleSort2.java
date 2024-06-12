@@ -22,7 +22,7 @@ class 실습6_2BubbleSort2 {
         	 count++;
              if (a[j - 1] > a[j]) {
                  swap(a, j - 1, j);
-                 exchg++;
+                 exchg++;// 교환이 되면 증가 
              }
          }
          if (exchg == 0) break;  // 교환이 이루어지지 않으면 멈춤 - 추가된 코드 

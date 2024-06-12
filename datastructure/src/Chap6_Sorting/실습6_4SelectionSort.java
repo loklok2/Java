@@ -21,7 +21,7 @@ public class 실습6_4SelectionSort {
          {
         	 count++;
              if (a[j] < a[min]) //가장 작은 것을 선택
-                 min = j;//min이 가장 작은 element를 가짐
+                 min = j;//min이 가장 작은 element를 가짐 -straight selection
          }
          swap(a, i, min); // 아직 정렬되지 않은 부분의 첫 요소와 가장 작은 요소를 교환
      }
