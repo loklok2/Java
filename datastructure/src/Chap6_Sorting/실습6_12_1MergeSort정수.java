@@ -1,20 +1,20 @@
 package Chap6_Sorting;
 
-public class 실습6_12_1MergeSort정수 {
+public class 실습6_12_1MergeSort정수 { //정수합병정렬 p245
 
 	// --- 배열 요소 a[idx1]와 a[idx2]의 값을 교환 ---//
-	static void merge(int[] a, int lefta, int righta, int leftb, int rightb ) {
+	static void merge(int[] a, int lefta, int righta, int leftb, int rightb ) { 
 		 //body를 지우고 작성 훈련 연습이 도움이 된다 
 		int temp[] = new int[30];
 		int ix = 0;
-		int p = lefta, q = leftb;
-		while (p <= righta && q <= rightb) {
+		int p = lefta, q = leftb; // 인덱스
+		while (p <= righta && q <= rightb) { // body
 			if (a[p] < a[q]) temp[ix++] = a[p++];
 			else if (a[p] > a[q]) temp[ix++] = a[q++];
 			else {
 				temp[ix++] = a[p++];temp[ix++] = a[q++];
 			}
-		}
+		} 
 		while (p > righta && q <= rightb) temp[ix++] = a[q++];
 		while (q > rightb && p <= righta) temp[ix++] = a[p++];
 		System.out.println();
@@ -26,8 +26,8 @@ public class 실습6_12_1MergeSort정수 {
 	}
 
 	// --- 퀵 정렬(비재귀 버전)---//
-	static void MergeSort(int[] a, int left, int right) {
-		int mid = (left+right)/2;
+	static void MergeSort(int[] a, int left, int right) { //배열은 하나 이나 반으로 쪼개서 재 정렬해서 병합
+		int mid = (left+right)/2; //반으로 나누는 지점
 		if (left == right) return;
 		MergeSort(a, left, mid);
 		MergeSort(a, mid+1, right);

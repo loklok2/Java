@@ -12,7 +12,7 @@ class 실습6_11MergeArray {
      int pc = 0;
 
      while (pa < na && pb < nb)        // 작은 쪽을 c에 넣어 둠
-         c[pc++] = (a[pa] <= b[pb]) ? a[pa++] : b[pb++];
+         c[pc++] = (a[pa] <= b[pb]) ? a[pa++] : b[pb++]; //삼항연산
 
      while (pa < na)                   // a에 남아있는 요소를 복사
          c[pc++] = a[pa++];

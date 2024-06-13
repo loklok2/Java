@@ -2,7 +2,7 @@ package test;
 
 
 //5번 실습 - 2장 실습 2-10를 수정하여 객체 배열의 정렬 구현 교재88p
-class PhyscData implements Comparable<PhyscData>{
+class PhyscData2 implements Comparable<PhyscData>{
 	String name;
 	int height;
 	double vision;

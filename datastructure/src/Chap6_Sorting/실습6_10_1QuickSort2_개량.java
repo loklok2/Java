@@ -30,6 +30,11 @@ class Point {
 	public void setY(int y) {
 		iy = y;
 	}
+
+	@Override
+	public String toString() {
+		return "<" + ix + ", " + iy + ">";
+	}
 }
 
 class Stack3<T>{  //제네릭 타입의 스택 클래스 

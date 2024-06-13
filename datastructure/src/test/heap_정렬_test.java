@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 interface MaxHeap {
 	public void Insert(int x);
-	public int DeleteMax();
+	public int DeleteMax();   //인서트 딜리트사용
 }
 
 class Heap implements MaxHeap {
