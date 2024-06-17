@@ -1,4 +1,4 @@
-package test;
+package Chap3_검색;
 
 import java.util.Arrays;
 import java.util.Comparator;

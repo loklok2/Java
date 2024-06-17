@@ -1,4 +1,4 @@
-package test;
+package Chap5_Recursive;
 /*
  * 미로 찾기 문제
  * 플라토의 미로 찾기 문제 설명 자료 학습

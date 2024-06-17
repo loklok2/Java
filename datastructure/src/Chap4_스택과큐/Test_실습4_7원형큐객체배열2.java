@@ -1,4 +1,4 @@
-package test;
+package Chap4_스택과큐;
 
 import java.util.Random;
 import java.util.Scanner;

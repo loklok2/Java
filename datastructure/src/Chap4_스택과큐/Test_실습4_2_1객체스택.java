@@ -1,4 +1,4 @@
-package test;
+package Chap4_스택과큐;
 /*
  * point(x,y) 객체를 스택에 저장
  * 좌표를 스택에 구현 소스 코드 - 5장에서 활용

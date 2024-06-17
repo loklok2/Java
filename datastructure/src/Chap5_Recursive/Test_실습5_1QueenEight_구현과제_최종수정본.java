@@ -1,4 +1,4 @@
-package test;
+package Chap5_Recursive;
 
 //해가 256개 확인 필요
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package test;
+package Chap4_스택과큐;
 
 /*
  * 3장 과제1: 스트링 배열 합병 정렬

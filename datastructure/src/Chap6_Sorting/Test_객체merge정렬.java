@@ -1,4 +1,4 @@
-package test;
+package Chap6_Sorting;
 /*
  * 6장 구현 실습과제1 
  * 객체로 실행
