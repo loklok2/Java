@@ -5,98 +5,98 @@ import java.util.Random;
 import java.util.Scanner;
 
 class Node1 {
-	int data;
-	Node1 link;
+	int data; //노드 데이터 저장변수
+	Node1 link;	// 다음노드 가르키는 링크
 
-	public Node1(int element) { //300p
-		data = element;
-		link = null;
+	public Node1(int element) { //300p 참고
+		data = element; 
+		link = null; // 초기에는 다음 노드를 가르키는 링크는 null로 초기화
 	}
 }
 
 class LinkedList1 {
-	Node1 first;
+	Node1 first; //리스트의 첫번째 노드
 
 	public LinkedList1() {
-		first = null;
+		first = null;	//리스트의 첫번쨰 노드를 null로 초기화
 	}
 
-	public boolean Delete(int element) {
-		Node1 q, current = first;
+	public boolean Delete(int element) { //리스트에서 삭제하는 메서ㅣ드
+		Node1 q, current = first; //q와 current를 첫 노드로 초기화
 		q = current;
 		
 		if(first == null) {
-			return false; //리스트 비었을때
+			return false; //리스트 비었을때 삭제 못하니까 false반환
 		}
 		if (first.data == element) {
-			first = first.link;
+			first = first.link; //첫번째 노드가 삭제할 값이면 첫노드를 변경
 			return true;
 		}
 		while (q.link != null) {
-			if (q.link.data == element) {
-				q.link = q.link.link;
+			if (q.link.data == element) { //삭제할 값을 찾으면
+				q.link = q.link.link;	//노드를 건너뛰고 연결
 				return true;				
 			}
-			q = current.link;
+			q = current.link; 		//q를 다음 노드로 이동
 		}
-		return false;
+		return false;	//삭제할게 없으면 
 	}
 
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
-		Node1 p = first;
+		Node1 p = first;  //p를 첫 노드로 초기화
 	    int num = 0; // 인덱스 변수
-	    if (p == null) {
-	        System.out.println("리스트가 비어 있습니다.");
-	        return;
-	    }
-	    while (p != null) {
-	        System.out.print("[" + num + "] " + p.data + " ");
-	        p = p.link;
-	        num++; // 인덱스 증가
-	    }
-	    System.out.println();
+	    while (p != null) { // p가 null이 아닐 때까지 반복
+			System.out.print(p.data + " -> "); // p의 데이터를 출력
+			p = p.link; // p를 다음 노드로 이동
+			if (p == null)  {
+				System.out.println("리스트 끝"); // p가 null이면 리스트의 끝이므로 출력
+			}
+		}
 	}
 
 	public void Add(int element) // 임의 값을 삽입할 때 리스트가 오름차순으로 정렬이 되도록 한다
 	{								// 처음에 중간에 끝에가 여기서 모두 구현이 되야한다 
 		Node1 newNode = new Node1(element);
-		if (first == null) // insert into empty list
+		if (first == null) // insert into empty list 
 		{
-			first = newNode;
+			first = newNode; //리스트가 비었으면 첫번째 노드로 설정
 			return;
 		}
 		Node1 p = first, q = null;//p라는 변수를 도입해서 각 노드를 따라간다
 		while (p != null) {
 			if(element > p.data) {
 				q = p; //q가 p를 따라 다닌다
-				p = p.link;
+				p = p.link; //p를 다음노드로 이동
 			}else {
-				if(q == null) { //1번 처리
+				if(q == null) { //1번처리 = 첫번째 노드에 삽입하는 경우임
 					newNode.link = p;
 					first = newNode;
 					return;
 				}
-				q.link = newNode; //2번
+				q.link = newNode; //2번 새로운 노드 삽입
 				newNode.link = p;
 				return;
 			}
 		}
 		if(q != null) { 
-			q.link = newNode;  
+			q.link = newNode;  	// 리스트의 끝에 삽입
+		} else {
+			first = newNode;		//교수님 코드에서 하나 더 추가  리스트가 비엇을 경우에 첫번째 노드로 설정
 		}
 
 	}
 
 	public boolean Search(int data) { //전달된 data 값을 찾아 존재하면 true로 리턴, 없으면 false로 리턴
-		Node1 ptr = first;
+		Node1 ptr = first;   //ptr을 첫 노드로 초기화
 		while (ptr != null) {
-			if(data == ptr.data) {
+			if(data == ptr.data) {			//값을 찾았으면 true
 				return true;
 			}
-			ptr = ptr.link; //이 부분의 소스코드를 무조건 이해해야함 인서트를 먼저 보자
+			ptr = ptr.link; // ptr을 다음 노드로 이동
 		}
 		return false;
 	}
+	
 	void Merge(LinkedList1 b) {
 		/*
 		 * 연결리스트 a,b에 대하여 a = a + b
@@ -105,8 +105,50 @@ class LinkedList1 {
 		 * a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
 		 * 새로운 노드를 만들지 않고, 제자리에서 바로 구현하는거
 		 */
-		
+	    Node1 p1 = first; // 첫 번째 리스트의 포인터
+	    Node1 p2 = b.first; // 두 번째 리스트의 포인터
+	    Node1 tail = null; // 합병된 리스트의 끝을 가리킬 포인터
+
+	    // 두 리스트가 모두 비어있을 경우 처리
+	    if (p1 == null) {
+	        first = p2; // 첫 번째 리스트가 비어 있으면 두 번째 리스트를 첫 번째 리스트로 설정
+	        return;
+	    }
+	    if (p2 == null) {
+	        return; // 두 번째 리스트가 비어 있으면 첫 번째 리스트는 그대로 유지
+	    }
+
+	    // 첫 번째 노드를 설정
+	    if (p1.data <= p2.data) {
+	        first = p1; // 첫 번째 리스트의 첫 노드가 더 작거나 같으면 첫 노드로 설정
+	        p1 = p1.link; // 첫 번째 리스트의 포인터를 다음 노드로 이동
+	    } else {
+	        first = p2; // 두 번째 리스트의 첫 노드가 더 작으면 첫 노드로 설정
+	        p2 = p2.link; // 두 번째 리스트의 포인터를 다음 노드로 이동
+	    }
+	    tail = first; // tail을 첫 노드로 초기화
+
+	    // 두 리스트를 순회하며 합병
+	    while (p1 != null && p2 != null) {
+	        if (p1.data <= p2.data) {
+	            tail.link = p1; // 첫 번째 리스트의 노드가 더 작거나 같으면 tail의 다음 노드로 설정
+	            tail = p1; // tail을 첫 번째 리스트의 노드로 이동
+	            p1 = p1.link; // 첫 번째 리스트의 포인터를 다음 노드로 이동
+	        } else {
+	            tail.link = p2; // 두 번째 리스트의 노드가 더 작으면 tail의 다음 노드로 설정
+	            tail = p2; // tail을 두 번째 리스트의 노드로 이동
+	            p2 = p2.link; // 두 번째 리스트의 포인터를 다음 노드로 이동
+	        }
+	    }
+
+	    // 남아있는 노드를 tail의 다음 노드로 연결
+	    if (p1 != null) {
+	        tail.link = p1; // 첫 번째 리스트에 남아있는 노드가 있으면 연결
+	    } else {
+	        tail.link = p2; // 두 번째 리스트에 남아있는 노드가 있으면 연결
+	    }
 	}
+
 }
 
 public class 실습9_1정수연결리스트 {
@@ -162,6 +204,7 @@ public class 실습9_1정수연결리스트 {
 		do {
 			switch (menu = SelectMenu()) {//Menu 생성자 호출 - menu 객체를 리턴한다 
 			case Add: // 난수를 삽입하는데 올림차순으로 정렬되도록 구현
+				count = 5; ///이거 맞는지 확인해야함
 				for (int i =0; i < count; i++) {
 					data = rand.nextInt(20);
 					l.Add(data); 
