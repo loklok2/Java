@@ -120,7 +120,7 @@ class CircularList {
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
 		Node3 p = first.link;
 		SimpleObject3 so;
-		while(p != null) { // p가 null이 아닐 때까지 반복
+		while(p != first) { // p가 null이 아닐 때까지 반복
 			System.out.print(p.data.toString()); // p의 데이터를 출력
 			p = p.link; // p를 다음 노드로 이동
 		}

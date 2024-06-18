@@ -9,31 +9,23 @@ import java.util.Scanner;
 class SimpleObject5 {
 	static final int NO = 1; // 번호를 읽어 들일까요?
 	static final int NAME = 2; // 이름을 읽어 들일까요?
-
+	static final int EXPIRE = 4; //유효기간을 읽어 들일까요?
+	
 	private String no; // 회원번호
 	private String name; // 이름
 	private String expire;//  유효기간 필드를 추가
 
 	// --- 문자열 표현을 반환 ---//
 	public String toString() {
-		return "(" + no + ") " + name;
+		return "(" + no + ") " + name + "(" + expire + ")";
 	}
-	
-	public String getNo() {
-        return no;
-    }
-	
-	public SimpleObject5() { //생성자
+	public SimpleObject5() {
 		no = null;
 		name = null;
+		expire = null;
 	}
 	// --- 데이터를 읽어 들임 ---//
 	void scanData(String guide, int sw) {//sw가 3이면 11 비트 연산 >  NO, NAME을 모두 입력받는다 
-		//여기서 sw가 3이라고 했을 때, 이를 이진수로 표현하면 11. 즉, 두 번째 비트와 첫 번째 비트가 모두 1.
-		//NO는 1이므로, 이진수로는 01. 따라서 sw & NO는 11 & 01이 되어, 결과는 01. 이는 10진수로 1.
-		//즉, sw & NO의 결과가 NO와 같다는 것은 sw의 첫 번째 비트가 1이라는 뜻. 이는 sw가 NO를 포함한다는 의미로 해석. 
-		//이와 같은 방식으로 sw & NAME의 결과를 통해 sw가 NAME을 포함하는지를 판단. 
-		//이러한 방식을 통해 sw의 값에 따라 번호와 이름을 동시에, 또는 각각 입력받을 수 있게 됨.
 		Scanner sc = new Scanner(System.in);
 		System.out.println(guide + "할 데이터를 입력하세요."+ sw);
 
@@ -45,6 +37,10 @@ class SimpleObject5 {
 			System.out.print("이름: ");
 			name = sc.next();
 		}
+		if ((sw & EXPIRE) == EXPIRE) { // sw가 EXPIRE일 경우 유효기간을 입력받음
+            System.out.print("유효기간: ");
+            expire = sc.next();
+        }
 	}
 
 	// --- 회원번호로 순서를 매기는 comparator ---//
@@ -52,9 +48,6 @@ class SimpleObject5 {
 
 	private static class NoOrderComparator implements Comparator<SimpleObject5> {
 		public int compare(SimpleObject5 d1, SimpleObject5 d2) {
-			// d1의 회원번호가 d2의 회원번호보다 크면 1을 반환
-			// d1의 회원번호가 d2의 회원번호보다 작으면 -1을 반환
-			// 두 회원번호가 같으면 0을 반환
 			return (d1.no.compareTo(d2.no) > 0) ? 1 : (d1.no.compareTo(d2.no)<0) ? -1 : 0;
 		}
 	}
@@ -64,134 +57,113 @@ class SimpleObject5 {
 
 	private static class NameOrderComparator implements Comparator<SimpleObject5> {
 		public int compare(SimpleObject5 d1, SimpleObject5 d2) {
-			// d1의 이름과 d2의 이름을 비교하여 결과를 반환
-			// 이름이 같으면 0, d1의 이름이 사전 순으로 더 앞이면 음수, 더 뒤면 양수를 반환
 			return d1.name.compareTo(d2.name);
 		}
 	}
+	public static final Comparator<SimpleObject5> EXPIRE_ORDER = new EXPIREOrderComparator();
+
+	private static class EXPIREOrderComparator implements Comparator<SimpleObject5> {
+		public int compare(SimpleObject5 d1, SimpleObject5 d2) {
+			return d1.expire.compareTo(d2.expire);
+		}
+	}
+	
+	
+	
+	
 }
 class Node2 {
 	SimpleObject5 data;
 	Node2 link;
-	
-	public Node2(SimpleObject5 element) {  //생성자
+	public Node2(SimpleObject5 element) {
 		data = element;
 		link = null;
 	}
 }
 
 class LinkedList2 {
-	Node2 first; 
-	
-	public LinkedList2() { //생성자
+	Node2 first;
+	public LinkedList2() {
 		first = null;
 	}
 
-	public int Delete(SimpleObject5 element, Comparator<SimpleObject5> cc)
-	//전달된 element를 찾을 때 comparator 객체를 사용한다 
-	{
+	public int Delete(SimpleObject5 element, Comparator<SimpleObject5> cc) {
+		//전달된 element를 찾을 때 comparator 객체를 사용한다 
 		Node2 q, current = first;
 		q = current;
-		
-		if(current != null) {
-			//첫번째 노드데이터가 삭제 데이터와 일치하면
-			if(cc.compare(q.data, element) == 0) {
-				first = q.link; // 첫번째 노드를 다음노드로 변경하고
-				return 1;	//삭제 성공
-			}else {
-				while(q.link != null) { //첫번째 이후 노드중에서 삭제할 데이터 찾기
-					if(cc.compare(q.link.data, element) == 0) { //삭제할 데이터를 찾으면
-						q.link = q.link.link; // 현재노드의 다음링크를 다다음 노드로 변경
-						return 1; //삭제 성공
-					}
-					current = q.link; // 현재 노드를 다음 노드로 이동
-				}
-			}
-		}
-		return -1;// 삭제할 대상이 없다.
+		while (current != null) {
+	        if (cc.compare(current.data, element) == 0) {
+	            if (current == first) {
+	                first = current.link;
+	            } else {
+	                q.link = current.link;
+	            }
+	            return 1; // 삭제 성공
+	        }
+	        q = current;
+	        current = current.link;
+	    }
+	    return -1; // 삭제할 데이터가 없음
 	}
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
 		Node2 p = first;
-		SimpleObject5 so;
-		while(p != null) { // p가 null이 아닐 때까지 반복
-			System.out.print(p.data.toString()); // p의 데이터를 출력
-			p = p.link; // p를 다음 노드로 이동
-		}
+	    SimpleObject5 so;
+
+	    while (p != null) {
+	        so = p.data;
+	        System.out.println(so);
+	        p = p.link;
+	    }
 	}
 	public void Add(SimpleObject5 element, Comparator<SimpleObject5> cc) {
 		//임의 값을 삽입할 때 리스트가 오름차순으로 정렬이 되도록 한다
-		Node2 newNode = new Node2(element); // 새 노드를 생성하고, 데이터를 설정합니다.
-		if (first == null) { // 리스트가 비어있는 경우
-			first = newNode; // 첫 번째 노드를 새 노드로 설정합니다.
-		} else { // 리스트가 비어있지 않은 경우
-			Node2 p = first; // p를 첫 번째 노드로 설정합니다.
-			while(p.link != null) { // p의 다음 노드가 null이 아닐 때까지 반복합니다.
-				p = p.link; // p를 다음 노드로 이동합니다.
-			}
-			p.link = newNode; // p의 다음 노드를 새 노드로 설정합니다.
-		}
+		Node2 newNode = new Node2(element);
+		if (first == null) {//insert into empty list
+	        first = newNode; // 빈 리스트에 첫 번째 노드로 삽입
+	        return;
+	    }
+		
+	    Node2 p = first;
+	    Node2 q = null;
+	    
+	    while (p != null && cc.compare(p.data, element) < 0) {
+	        q = p;
+	        p = p.link;
+	    }
+
+	    if (q == null) {
+	        newNode.link = first;
+	        first = newNode;
+	    } else {
+	        newNode.link = p;
+	        q.link = newNode;
+	    }
 	}
 	
 	public boolean Search(SimpleObject5 element, Comparator<SimpleObject5> cc) { 
 		// 전체 리스트를 올림차순 순서대로 출력한다.
 		Node2 q, current = first;
 		q = current;
-		while (q != null) {
-	        if (cc.compare(q.data, element) == 0) {
-	            return true;
+		while (current != null) {
+	        if (cc.compare(current.data, element) == 0) {
+	            System.out.println("찾은 데이터: " + current.data);
+	            return true; // 요소를 찾으면 true 반환
 	        }
-	        current = q;
-	        q = q.link;
+	        q = current;
+	        current = current.link;
 	    }
-	    return false;
+
+	    System.out.println("찾는 데이터가 없습니다.");
+	    return false; // 요소를 찾지 못하면 false 반환
 	}
-	/*
-	 * 연결리스트 a,b에 대하여 a = a + b
-	 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
-	 * 난이도 등급: 최상급
-	 * 회원번호에 대하여 a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
-	 */
-	void Merge(LinkedList2 b) {
-	    if (first == null) { // 첫 번째 리스트가 비어있는 경우
-	        first = b.first; // 첫 번째 리스트를 두 번째 리스트로 설정
-	    } else if (b.first == null) { // 두 번째 리스트가 비어있는 경우
-	        // 첫 번째 리스트를 그대로 유지합니다. 추가 작업이 필요 없음
-	    } else { // 두 리스트 모두 비어있지 않은 경우
-	        Node2 aPtr = first; // 첫 번째 리스트의 현재 노드를 가리킨다
-	        Node2 bPtr = b.first; // 두 번째 리스트의 현재 노드를 가리킨다
-	        Node2 mergedPtr; // 합친 리스트의 현재 노드를 가리킨다
-	        // 첫 번째 노드를 결정합니다.
-	        if (aPtr.data.getNo().compareTo(bPtr.data.getNo()) < 0) { // 첫 번째 리스트의 현재 노드가 더 작은 경우
-	            mergedPtr = aPtr; // 합친 리스트의 현재 노드를 첫 번째 리스트의 현재 노드로 설정
-	            aPtr = aPtr.link; // 첫 번째 리스트의 현재 노드를 다음 노드로 이동
-	        } else { // 두 번째 리스트의 현재 노드가 더 작거나 같은 경우
-	            mergedPtr = bPtr; // 합친 리스트의 현재 노드를 두 번째 리스트의 현재 노드로 설정
-	            bPtr = bPtr.link; // 두 번째 리스트의 현재 노드를 다음 노드로 이동
-	        }
-
-	        first = mergedPtr; // 첫 번째 노드를 설정합니다.
-
-	        // 두 리스트의 모든 노드를 비교하면서 병합
-	        while (aPtr != null && bPtr != null) { // 두 리스트의 현재 노드가 모두 null이 아닌 동안 반복
-	            if (aPtr.data.getNo().compareTo(bPtr.data.getNo()) < 0) { // 첫 번째 리스트의 현재 노드가 더 작은 경우
-	                mergedPtr.link = aPtr; // 합친 리스트의 현재 노드의 다음 노드를 첫 번째 리스트의 현재 노드로 설정
-	                aPtr = aPtr.link; // 첫 번째 리스트의 현재 노드를 다음 노드로 이동
-	            } else { // 두 번째 리스트의 현재 노드가 더 작거나 같은 경우
-	                mergedPtr.link = bPtr; // 합친 리스트의 현재 노드의 다음 노드를 두 번째 리스트의 현재 노드로 설정
-	                bPtr = bPtr.link; // 두 번째 리스트의 현재 노드를 다음 노드로 이동
-	            }
-	            mergedPtr = mergedPtr.link; // 합친 리스트의 현재 노드를 다음 노드로 이동
-	        }
-
-	        // 남아있는 노드를 추가
-	        if (aPtr != null) { // 첫 번째 리스트에 남아있는 노드가 있는 경우
-	            mergedPtr.link = aPtr; // 합친 리스트의 현재 노드의 다음 노드를 첫 번째 리스트의 현재 노드로 설정
-	        } else { // 두 번째 리스트에 남아있는 노드가 있는 경우
-	            mergedPtr.link = bPtr; // 합친 리스트의 현재 노드의 다음 노드를 두 번째 리스트의 현재 노드로 설정
-	        }
-	    }
+	void Merge(LinkedList2 b, Comparator<SimpleObject5> cc) {
+		/*
+		 * 연결리스트 a,b에 대하여 a = a + b
+		 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
+		 * 난이도 등급: 최상급
+		 * 회원번호에 대하여 a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
+		 */
 	}
-
 }
 public class 실습9_2객체연결리스트 {
 
@@ -271,7 +243,14 @@ public class 실습9_2객체연결리스트 {
 					data.scanData("병합", 3);
 					l2.Add(data, SimpleObject5.NO_ORDER );				
 				}
-				l.Merge(l2);
+				System.out.println("리스트 l::");
+				l.Show();
+				System.out.println("리스트 l2::");
+				l2.Show();
+				l.Merge(l2, SimpleObject5.NO_ORDER);
+				//merge 실행후 show로 결과 확인 - 새로운 노드를 만들지 않고 합병 - 난이도 상
+				System.out.println("병합 리스트 l::");
+				l.Show();
 				break;
 			case Exit :                           // 꼬리 노드 삭제
 				break;
