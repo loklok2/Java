@@ -211,19 +211,19 @@ public class 실습9_6객체이중리스트 {
 					System.out.println("검색 값 = " + so + "데이터가 존재합니다.");
 				break;
 			case Merge://기존 2개의 리스트를 합병하여 새로운 리스트를 생성(새로운 노드를 생성하여 추가)
-				for (int i = 0; i < count; i++) {
-					so =  new SimpleObject2();
-					so.scanData("입력", 3);
-					lst2.add(so, SimpleObject2.NO_ORDER);
+				for (int i = 0; i < count; i++) {//3개의 객체를 연속으로 입력받아 l2 객체를 만든다 
+					data = new SimpleObject3();
+					data.scanData("병합", 3);
+					l2.Add(data, SimpleObject3.NO_ORDER );				
 				}
-				lst3 = lst1.merge(lst2);
-				System.out.println("list1: ");
-				lst1.show();
-				System.out.println("list2: ");
-				lst2.show();
-				System.out.println("list3: ");
-				lst3.show();
-				break;
+				System.out.println("리스트 l::");
+				l.Show();
+				System.out.println("리스트 l2::");
+				l2.Show();
+				l.Merge(l2, SimpleObject3.NO_ORDER);
+				//merge 실행후 show로 결과 확인 - 새로운 노드를 만들지 않고 합병 - 난이도 상
+				System.out.println("병합 리스트 l::");
+				l.Show();	
 			case Exit: // 
 				break;
 			}

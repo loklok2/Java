@@ -2,7 +2,7 @@ package Chap8_List;
 
 /*
  * 정수 리스트 > 객체 리스트> 객체 원형 리스트 
- * 헤드 노드가 있는 원형 리스트, 헤드 노드가 없는 원형 리스트 구현
+ * 헤드 노드가 있는 원형 리스트로 구현
  * merge 구현: in-place 구현, 새로운 노드를 생성하여 합병 구현 
  * 원형 이중 리스트로 동일하게 적용
  */
@@ -87,32 +87,65 @@ class CircularList {
 	 * arr.length; i++) { for (int j = i; j < arr.length; j++) if
 	 * (cc.compare(arr[i], arr[j])> 0) swap(arr, i, j); } }
 	 */
-	public int Delete(SimpleObject3 element, Comparator<SimpleObject3> cc) // delete the element
-	{
+	public int Delete(SimpleObject3 element, Comparator<SimpleObject3> cc) {
 		Node3 q, current = first.link;
 		q = current;
-
+		if(first.link == first) { //리스트가 비었다면
+			return -1;
+		}
+		if(cc.compare(q.data, element)==0) { // 첫번째 노드를 삭제해야하면
+			if(q == q.link) { //리스트에 유일한 노드인 경우
+				first.link = first; //리스트를 빈상태로 만들기
+			}else {
+				while (q.link != first.link) { //마지막 노드를 찾으러 
+					q = q.link;
+				}
+				first.link = q.link; //첫번째 노드 삭제하고 헤드를 다음 노드로 설정
+				q.link = first.link; // 마지막 노드를 새 헤드에 연결
+			}
+			return 1;
+		}
+		while (q != first) { //첫번째 노드 이후의 노드를 삭제하는 경우
+			if (cc.compare(q.data, element) == 0) {
+				q.link = q.link;
+				return 1;
+			}
+			q = current;
+			current = current.link;					
+		}
+		
 		return -1;// 삭제할 대상이 없다.
 	}
 
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
 		Node3 p = first.link;
 		SimpleObject3 so;
-
+		while(p != null) { // p가 null이 아닐 때까지 반복
+			System.out.print(p.data.toString()); // p의 데이터를 출력
+			p = p.link; // p를 다음 노드로 이동
+		}
 	}
 
-	public void Add(SimpleObject3 element, Comparator<SimpleObject3> cc) // 임의 값을 삽입할 때 리스트가 오름차순으로 정렬이 되도록 한다
-	{
+	public void Add(SimpleObject3 element, Comparator<SimpleObject3> cc) {
+		// 임의 값을 삽입할 때 리스트가 오름차순으로 정렬이 되도록 한다
 		Node3 newNode = new Node3(element);
+		if(first.link == first) {
+			first.link = newNode;
+			newNode.link = first;
+			return;
+		}
+		Node3 p = first;
+		Node3 q = first.link;
 	
 	}
 
-	public boolean Search(SimpleObject3 element, Comparator<SimpleObject3> cc) { // 전체 리스트를 순서대로 출력한다.
+	public boolean Search(SimpleObject3 element, Comparator<SimpleObject3> cc) { 
+		// 전체 리스트를 순서대로 출력한다.
 		Node3 q, current = first.link;
 
 		return false;
 	}
-	void Merge(LinkedList1 b) {
+	void Merge(CircularList2 b, Comparator<SimpleObject3> cc) {
 		/*
 		 * 연결리스트 a,b에 대하여 a = a + b
 		 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
@@ -199,7 +232,14 @@ public class 실습9_4객체원형리스트 {
 					data.scanData("병합", 3);
 					l2.Add(data, SimpleObject5.NO_ORDER );				
 				}
-				l.Merge(l2);
+				System.out.println("리스트 l::");
+				l.Show();
+				System.out.println("리스트 l2::");
+				l2.Show();
+				l.Merge(l2, SimpleObject5.NO_ORDER);
+				//merge 실행후 show로 결과 확인 - 새로운 노드를 만들지 않고 합병 - 난이도 상
+				System.out.println("병합 리스트 l::");
+				l.Show();
 			case Exit: // 꼬리 노드 삭제
 				break;
 			}

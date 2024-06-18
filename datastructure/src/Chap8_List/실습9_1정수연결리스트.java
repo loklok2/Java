@@ -97,60 +97,52 @@ class LinkedList1 {
 		return false;
 	}
 	
+	/*
+	 * 연결리스트 a,b에 대하여 a = a + b
+	 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
+	 * 난이도 등급: 최상
+	 * a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
+	 * 새로운 노드를 만들지 않고, 제자리에서 바로 구현하는거
+	 * 방법은 2가지 in-place 사용, 새로운 리스트를 만들어서 합병
+	 */
 	void Merge(LinkedList1 b) {
-		/*
-		 * 연결리스트 a,b에 대하여 a = a + b
-		 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
-		 * 난이도 등급: 최상
-		 * a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
-		 * 새로운 노드를 만들지 않고, 제자리에서 바로 구현하는거
-		 */
-	    Node1 p1 = first; // 첫 번째 리스트의 포인터
-	    Node1 p2 = b.first; // 두 번째 리스트의 포인터
-	    Node1 tail = null; // 합병된 리스트의 끝을 가리킬 포인터
-
+	    Node1 p = first; // 첫 번째 리스트의 포인터
+	    Node1 q = b.first; // 두 번째 리스트의 포인터
+	    Node1 l = null; // 합병된 리스트의 끝을 가리킬 포인터
+	    
 	    // 두 리스트가 모두 비어있을 경우 처리
-	    if (p1 == null) {
-	        first = p2; // 첫 번째 리스트가 비어 있으면 두 번째 리스트를 첫 번째 리스트로 설정
+	    if (p == null) {
+	        first = p; // 첫 번째 리스트가 비어 있으면 두 번째 리스트를 첫 번째 리스트로 설정
 	        return;
 	    }
-	    if (p2 == null) {
+	    if (q == null) {
 	        return; // 두 번째 리스트가 비어 있으면 첫 번째 리스트는 그대로 유지
 	    }
-
-	    // 첫 번째 노드를 설정
-	    if (p1.data <= p2.data) {
-	        first = p1; // 첫 번째 리스트의 첫 노드가 더 작거나 같으면 첫 노드로 설정
-	        p1 = p1.link; // 첫 번째 리스트의 포인터를 다음 노드로 이동
+	    
+	    if(p.data <= q.data) { //각데이터의 첫 노드를 비교해서 값이 작은 걸로 첫 노드 설정
+	    	first = p;
+	    	l = p;
+	    	p = p.link;
 	    } else {
-	        first = p2; // 두 번째 리스트의 첫 노드가 더 작으면 첫 노드로 설정
-	        p2 = p2.link; // 두 번째 리스트의 포인터를 다음 노드로 이동
+	    	first = q;
+	    	l = q;
+	    	q = q.link;
 	    }
-	    tail = first; // tail을 첫 노드로 초기화
-
-	    // 두 리스트를 순회하며 합병
-	    while (p1 != null && p2 != null) {
-	        if (p1.data <= p2.data) {
-	            tail.link = p1; // 첫 번째 리스트의 노드가 더 작거나 같으면 tail의 다음 노드로 설정
-	            tail = p1; // tail을 첫 번째 리스트의 노드로 이동
-	            p1 = p1.link; // 첫 번째 리스트의 포인터를 다음 노드로 이동
-	        } else {
-	            tail.link = p2; // 두 번째 리스트의 노드가 더 작으면 tail의 다음 노드로 설정
-	            tail = p2; // tail을 두 번째 리스트의 노드로 이동
-	            p2 = p2.link; // 두 번째 리스트의 포인터를 다음 노드로 이동
-	        }
-	    }
-
-	    // 남아있는 노드를 tail의 다음 노드로 연결
-	    if (p1 != null) {
-	        tail.link = p1; // 첫 번째 리스트에 남아있는 노드가 있으면 연결
-	    } else {
-	        tail.link = p2; // 두 번째 리스트에 남아있는 노드가 있으면 연결
+	    
+	    while (p != null && q != null) {
+	    	if(p.link != null && p.link.data <= q.data) {
+	    		l.link = p;
+	    		l = p;
+	    		p = p.link;
+	    	} else {
+	    		l.link = q;
+	    		l = q;
+	    		q = q.link;
+	    	}
 	    }
 	}
 
 }
-
 public class 실습9_1정수연결리스트 {
 	enum Menu { //java내에서는 0 1 2 3 4 5 로 인식
 		Add("삽입"), Delete("삭제"), Show("인쇄"), Search("검색"), Merge("합병"), Exit("종료");
@@ -197,14 +189,15 @@ public class 실습9_1정수연결리스트 {
 	public static void main(String[] args) {
 		Menu menu; // 메뉴 참조 변수일 뿐이다 
 		Random rand = new Random();
-		LinkedList1 l = new LinkedList1();  //Linkedlist l 객체 생성
+		LinkedList1 l = new LinkedList1();
 		Scanner sc = new Scanner(System.in);
-		int count = 0; //난수 생성 갯수
+		System.out.println("추가할 난수 숫자 개수::");
+		int count = sc.nextInt(); //난수 생성 갯수
 		int data = 0;
 		do {
 			switch (menu = SelectMenu()) {//Menu 생성자 호출 - menu 객체를 리턴한다 
 			case Add: // 난수를 삽입하는데 올림차순으로 정렬되도록 구현
-				count = 5; ///이거 맞는지 확인해야함
+				//count = 5; ///이거 맞는지 확인해야함
 				for (int i =0; i < count; i++) {
 					data = rand.nextInt(20);
 					l.Add(data); 

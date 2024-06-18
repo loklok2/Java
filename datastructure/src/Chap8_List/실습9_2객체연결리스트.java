@@ -12,7 +12,7 @@ class SimpleObject5 {
 
 	private String no; // 회원번호
 	private String name; // 이름
-	String expire;//  유효기간 필드를 추가
+	private String expire;//  유효기간 필드를 추가
 
 	// --- 문자열 표현을 반환 ---//
 	public String toString() {
@@ -73,6 +73,7 @@ class SimpleObject5 {
 class Node2 {
 	SimpleObject5 data;
 	Node2 link;
+	
 	public Node2(SimpleObject5 element) {  //생성자
 		data = element;
 		link = null;
@@ -113,7 +114,7 @@ class LinkedList2 {
 		Node2 p = first;
 		SimpleObject5 so;
 		while(p != null) { // p가 null이 아닐 때까지 반복
-			System.out.println(p.data.toString()); // p의 데이터를 출력
+			System.out.print(p.data.toString()); // p의 데이터를 출력
 			p = p.link; // p를 다음 노드로 이동
 		}
 	}
