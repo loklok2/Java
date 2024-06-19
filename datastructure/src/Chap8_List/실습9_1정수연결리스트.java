@@ -24,7 +24,7 @@ class LinkedList1 {
 	public boolean Delete(int element) { //리스트에서 삭제하는 메서ㅣ드
 		Node1 q, current = first; //q와 current를 첫 노드로 초기화
 		q = current;
-		
+
 		if(first == null) {
 			return false; //리스트 비었을때 삭제 못하니까 false반환
 		}
@@ -44,8 +44,8 @@ class LinkedList1 {
 
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
 		Node1 p = first;  //p를 첫 노드로 초기화
-	    int num = 0; // 인덱스 변수
-	    while (p != null) { // p가 null이 아닐 때까지 반복
+		int num = 0; // 인덱스 변수
+		while (p != null) { // p가 null이 아닐 때까지 반복
 			System.out.print(p.data + " -> "); // p의 데이터를 출력
 			p = p.link; // p를 다음 노드로 이동
 			if (p == null)  {
@@ -96,7 +96,7 @@ class LinkedList1 {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * 연결리스트 a,b에 대하여 a = a + b
 	 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
@@ -106,40 +106,54 @@ class LinkedList1 {
 	 * 방법은 2가지 in-place 사용, 새로운 리스트를 만들어서 합병
 	 */
 	void Merge(LinkedList1 b) {
-	    Node1 p = first; // 첫 번째 리스트의 포인터
-	    Node1 q = b.first; // 두 번째 리스트의 포인터
-	    Node1 l = null; // 합병된 리스트의 끝을 가리킬 포인터
-	    
-	    // 두 리스트가 모두 비어있을 경우 처리
-	    if (p == null) {
-	        first = p; // 첫 번째 리스트가 비어 있으면 두 번째 리스트를 첫 번째 리스트로 설정
-	        return;
-	    }
-	    if (q == null) {
-	        return; // 두 번째 리스트가 비어 있으면 첫 번째 리스트는 그대로 유지
-	    }
-	    
-	    if(p.data <= q.data) { //각데이터의 첫 노드를 비교해서 값이 작은 걸로 첫 노드 설정
-	    	first = p;
-	    	l = p;
-	    	p = p.link;
-	    } else {
-	    	first = q;
-	    	l = q;
-	    	q = q.link;
-	    }
-	    
-	    while (p != null && q != null) {
-	    	if(p.link != null && p.link.data <= q.data) {
-	    		l.link = p;
-	    		l = p;
-	    		p = p.link;
-	    	} else {
-	    		l.link = q;
-	    		l = q;
-	    		q = q.link;
-	    	}
-	    }
+		Node1 p = first; // 첫 번째 리스트의 포인터
+		Node1 q = b.first; // 두 번째 리스트의 포인터
+		Node1 l = null; // 합병된 리스트의 끝을 가리킬 포인터
+
+		// 두 리스트가 모두 비어있을 경우 처리
+		if (first == null) {
+			first = q; // 첫 번째 리스트가 비어 있으면 두 번째 리스트를 첫 번째 리스트로 설정
+			return;
+		}
+		if (b.first == null) {
+			return; // 두 번째 리스트가 비어 있으면 첫 번째 리스트는 그대로 유지
+		}
+
+		if(p.data > q.data) { //각데이터의 첫 노드를 비교해서 값이 작은 걸로 첫 노드 설정
+
+			l = first;;
+			first = b.first;
+			b.first = l;
+			p = first;
+			q = b.first;
+		}
+
+		while (p != null && q != null) {
+			if(p.data <= q.data) {
+				while (p.link != null &&p.link.data < q.data) {
+					p = p.link;
+				}
+				l = p;
+				p = p.link;
+				l.link = q;
+
+			}
+			else {
+				while (q.link != null &&q.link.data < p.data) {
+					q = q.link;
+				}
+				l = q;
+				q = q.link;
+				l.link = p;
+			}
+
+		}
+		if (p == null) {
+			l.link = q;
+		}
+		if (q == null) {
+			l.link = p;
+		}
 	}
 
 }
@@ -158,7 +172,7 @@ public class 실습9_1정수연결리스트 {
 		//"Add" 상수가 정의될 때 Menu("삽입") 생성자가 호출되어 message 필드가 "삽입"으로 초기화
 		//생성자는 각 상수가 정의될 때 호출되며, 해당 상수의 message 필드를 초기화하는 역할
 		//enum 상수가 언제 정의되는가를 찾아 보아야 한다 
-	  //클래스(    생성자    )
+		//클래스(    생성자    )
 		Menu(String string) { // 생성자(constructor)가 언제 호출되는지 파악하는 것이 필요하다 
 			message = string;
 			System.out.println("\nMenu 생성자 호출:: " + string);
@@ -226,7 +240,10 @@ public class 실습9_1정수연결리스트 {
 					data = rand.nextInt(20);
 					l2.Add(data);
 				}
+				l.Show();
+				l2.Show();
 				l.Merge(l2);//merge 실행후 show로 결과 확인 - 새로운 노드를 만들지 않고 합병 - 난이도 상
+				l.Show();
 				break;
 			case Exit: // 꼬리 노드 삭제
 				break;

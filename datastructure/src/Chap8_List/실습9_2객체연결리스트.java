@@ -9,7 +9,7 @@ import java.util.Scanner;
 class SimpleObject5 {
 	static final int NO = 1; // 번호를 읽어 들일까요?
 	static final int NAME = 2; // 이름을 읽어 들일까요?
-	static final int EXPIRE = 4; //유효기간을 읽어 들일까요?
+	static final int EXPIRE = 3; //유효기간을 읽어 들일까요?
 	
 	private String no; // 회원번호
 	private String name; // 이름
@@ -17,7 +17,7 @@ class SimpleObject5 {
 
 	// --- 문자열 표현을 반환 ---//
 	public String toString() {
-		return "(" + no + ") " + name + "(" + expire + ")";
+		return "(" + no + ") " + name + " [" + expire + "]";
 	}
 	public SimpleObject5() {
 		no = null;
@@ -64,7 +64,7 @@ class SimpleObject5 {
 
 	private static class EXPIREOrderComparator implements Comparator<SimpleObject5> {
 		public int compare(SimpleObject5 d1, SimpleObject5 d2) {
-			return d1.expire.compareTo(d2.expire);
+			return (d1.expire.compareTo(d2.expire) > 0) ? 1 : (d1.expire.compareTo(d2.expire)<0) ? -1 : 0;
 		}
 	}
 	
@@ -108,12 +108,14 @@ class LinkedList2 {
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
 		Node2 p = first;
 	    SimpleObject5 so;
-
-	    while (p != null) {
-	        so = p.data;
-	        System.out.println(so);
-	        p = p.link;
-	    }
+	    while (p != null) { // p가 null이 아닐 때까지 반복
+	    	so = p.data;
+			System.out.print(so + "  "); // p의 데이터를 출력
+			p = p.link; // p를 다음 노드로 이동
+			if (p == null)  {
+				System.out.println("회원 끝"); // p가 null이면 리스트의 끝이므로 출력
+			}
+		}
 	}
 	public void Add(SimpleObject5 element, Comparator<SimpleObject5> cc) {
 		//임의 값을 삽입할 때 리스트가 오름차순으로 정렬이 되도록 한다
@@ -156,14 +158,53 @@ class LinkedList2 {
 	    System.out.println("찾는 데이터가 없습니다.");
 	    return false; // 요소를 찾지 못하면 false 반환
 	}
-	void Merge(LinkedList2 b, Comparator<SimpleObject5> cc) {
-		/*
-		 * 연결리스트 a,b에 대하여 a = a + b
-		 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
-		 * 난이도 등급: 최상급
-		 * 회원번호에 대하여 a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
-		 */
+	public void Merge(LinkedList2 b, Comparator<SimpleObject5> cc) {
+	    Node2 p = first; // 첫 번째 리스트의 시작 노드
+	    Node2 q = b.first; // 두 번째 리스트의 시작 노드
+	    Node2 prev = null; // 합병된 리스트의 이전 노드
+	    Node2 temp = null; // 합병된 리스트의 첫 번째 노드
+
+	    // 두 리스트가 모두 비어있을 경우
+	    if (first == null) {
+	        first = b.first; // 첫 번째 리스트가 비어 있으면 두 번째 리스트를 첫 번째 리스트로 설정
+	        return;
+	    }
+	    if (b.first == null) {
+	        return; // 두 번째 리스트가 비어 있으면 그대로 종료
+	    }
+
+	    // 첫 번째 노드 설정
+	    if (cc.compare(p.data, q.data) <= 0) {
+	        temp = p;
+	        p = p.link;
+	    } else {
+	        temp = q;
+	        q = q.link;
+	    }
+	    first = temp; // 합병된 리스트의 첫 번째 노드 설정
+	    prev = temp;
+
+	    // 두 리스트를 순회하면서 합병
+	    while (p != null && q != null) {
+	        if (cc.compare(p.data, q.data) <= 0) {
+	            prev.link = p;
+	            prev = p;
+	            p = p.link;
+	        } else {
+	            prev.link = q;
+	            prev = q;
+	            q = q.link;
+	        }
+	    }
+
+	    // 남은 노드 처리
+	    if (p == null) {
+	        prev.link = q;
+	    } else {
+	        prev.link = p;
+	    }
 	}
+
 }
 public class 실습9_2객체연결리스트 {
 
@@ -216,7 +257,7 @@ public class 실습9_2객체연결리스트 {
 			switch (menu = SelectMenu()) {
 			case Add :                          
 				data = new SimpleObject5();
-				data.scanData("입력", 3);
+				data.scanData("입력", 3); //7?
 				l.Add(data, SimpleObject5.NO_ORDER);//회원번호 순서로 정렬 입력
 				break;
 			case Delete :                         
@@ -240,7 +281,7 @@ public class 실습9_2객체연결리스트 {
 			case Merge://난이도 상
 				for (int i = 0; i < count; i++) {//3개의 객체를 연속으로 입력받아 l2 객체를 만든다 
 					data = new SimpleObject5();
-					data.scanData("병합", 3);
+					data.scanData("병합", 3);//7?
 					l2.Add(data, SimpleObject5.NO_ORDER );				
 				}
 				System.out.println("리스트 l::");
