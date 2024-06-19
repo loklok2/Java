@@ -91,16 +91,17 @@ class CircularList {
 	{
 		Node3 q, current = first.link;
 		q = current;
+		Node3 prev = first; // 이전 노드를 가리키는 포인터
+
 		while (current != first) {
-			q = current;
+			if (cc.compare(current.data, element) == 0) {
+				prev.link = current.link; 
+				return 1; // 삭제 성공
+			}
+			prev = current;
 			current = current.link;
 		}
-		Node3 prev = first;
-		while (prev.link != q) {
-			prev = prev.link;
-		}
-
-		return -1;// 삭제할 대상이 없다.
+		return -1; // 삭제할 대상이 없다.
 	}
 
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
@@ -119,34 +120,34 @@ class CircularList {
 	{
 		Node3 newNode = new Node3(element);
 		if (first.link == first) {
-	        first.link = newNode;
-	        newNode.link = first;
-	    } else {
-	        Node3 current = first.link;
-	        Node3 prev = first;
+			first.link = newNode;
+			newNode.link = first;
+		} else {
+			Node3 current = first.link;
+			Node3 prev = first;
 
-	        while (current != first && cc.compare(current.data, element) < 0) {
-	            prev = current;
-	            current = current.link;
-	        }
+			while (current != first && cc.compare(current.data, element) < 0) {
+				prev = current;
+				current = current.link;
+			}
 
-	        prev.link = newNode;
-	        newNode.link = current;
-	    }
-	
+			prev.link = newNode;
+			newNode.link = current;
+		}
+
 	}
 
 	public boolean Search(SimpleObject3 element, Comparator<SimpleObject3> cc) { // 전체 리스트를 순서대로 출력한다.
 		Node3 q, current = first.link;
 		while (current != first) {
-	        if (cc.compare(current.data, element) == 0) {
-	        	System.out.println("찾은 데이터: " + current.data);
-	            return true; // 데이터를 찾은 경우 true 반환
-	        }
-	        current = current.link; // 다음 노드로 이동
-	    }
+			if (cc.compare(current.data, element) == 0) {
+				System.out.println("찾은 데이터: " + current.data);
+				return true; // 데이터를 찾은 경우 true 반환
+			}
+			current = current.link; // 다음 노드로 이동
+		}
 		System.out.println("찾는 데이터가 없습니다.");
-	    return false; // 데이터를 찾지 못한 경우 false 반환
+		return false; // 데이터를 찾지 못한 경우 false 반환
 	}
 	void Merge(CircularList b, Comparator<SimpleObject3> cc) {
 		/*
@@ -155,24 +156,34 @@ class CircularList {
 		 * 난이도 등급: 최상급
 		 * 회원번호에 대하여 a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
 		 */
-		Node3 p = first.link; 
+		Node3 p = first.link;
 		Node3 q = b.first.link;
 		Node3 aPrev = first;
+
 		
-		while (q != b.first) {
-			if(cc.compare(p.data, q.data) > 0) {
+		while (q != b.first && p != first) {
+			if (cc.compare(p.data, q.data) > 0) {
 				Node3 temp = q;
 				q = q.link;
-				temp.link = aPrev.link;
+				temp.link = p;
 				aPrev.link = temp;
+				aPrev = temp;
 			} else {
 				aPrev = p;
 				p = p.link;
 			}
 		}
+
+		// 리스트 b의 남은 노드를 리스트 a에 추가
+		if (q != b.first) {
+			aPrev.link = q;
+			while (q.link != b.first) {
+				q = q.link;
+			}
+			q.link = first; // 원형 연결리스트 유지
+		}
 	}
 }
-
 public class 실습9_4객체원형리스트 {
 	enum Menu {
 		Add("삽입"), Delete("삭제"), Show("인쇄"), Search("검색"), Merge("합병"), Exit("종료");
