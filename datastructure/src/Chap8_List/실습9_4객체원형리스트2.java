@@ -87,136 +87,153 @@ class CircularList4 {
 	 */
 	public int Delete(SimpleObject4 element, Comparator<SimpleObject4> cc) {
 		if (first == null) {
-            return -1; // 리스트가 비어있음
-        }
-        Node5 current = first;
-        Node5 prev = null;
-        do {
-            if (cc.compare(current.data, element) == 0) {
-                if (prev == null) { // 삭제할 노드가 첫 번째 노드인 경우
-                    Node5 last = first;
-                    while (last.link != first) {
-                        last = last.link;
-                    }
-                    if (last == first) { // 리스트에 노드가 하나만 있는 경우
-                        first = null;
-                    } else {
-                        last.link = first.link;
-                        first = first.link;
-                    }
-                } else {
-                    prev.link = current.link;
-                }
-                return 0; // 삭제 성공
-            }
-            prev = current;
-            current = current.link;
-        } while (current != first);
-        return -1; // 삭제할 대상이 없음
-    }
+			return -1; // 리스트가 비어있음
+		}
+		Node5 current = first;
+		Node5 prev = null;
+		do {
+			if (cc.compare(current.data, element) == 0) {
+				if (prev == null) { // 삭제할 노드가 첫 번째 노드인 경우
+					Node5 last = first;
+					while (last.link != first) {
+						last = last.link;
+					}
+					if (last == first) { // 리스트에 노드가 하나만 있는 경우
+						first = null;
+					} else {
+						last.link = first.link;
+						first = first.link;
+					}
+				} else {
+					prev.link = current.link;
+				}
+				return 0; // 삭제 성공
+			}
+			prev = current;
+			current = current.link;
+		} while (current != first);
+		return -1; // 삭제할 대상이 없음
+	}
 
 	public void Show() { // 전체 리스트를 순서대로 출력한다.
 		if (first == null) {
-            System.out.println("리스트가 비어있습니다.");
-            return;
-        }
-        Node5 current = first;
-        do {
-            System.out.println(current.data);
-            current = current.link;
-        } while (current != first);
-    }
+			System.out.println("리스트가 비어있습니다.");
+			return;
+		}
+		Node5 current = first;
+		boolean isFirst = true; // 첫 번째 노드인지 확인하기 위한 플래그
+
+		while (isFirst || current != first) { // 첫 번째 노드이거나, 첫 번째 노드에 다시 도달하지 않은 동안 순회
+			System.out.print( current.data + " ");
+			current = current.link;
+			isFirst = false; // 첫 번째 노드 이후에는 false로 설정
+		}
+		System.out.println();
+	}
 
 	public void Add(SimpleObject4 element, Comparator<SimpleObject4> cc) { 
 		// 임의 값을 삽입할 때 리스트가 오름차순으로 정렬이 되도록 한다
 		Node5 newNode = new Node5(element);
-        if (first == null) {
-            first = newNode;
-            newNode.link = first;
-        } else {
-            Node5 current = first;
-            Node5 prev = null;
-            do {
-                int compareResult = cc.compare(current.data, element);
-                if (compareResult >= 0) {
-                    break;
-                }
-                prev = current;
-                current = current.link;
-            } while (current != first);
+		if (first == null) {
+			first = newNode;
+			newNode.link = first;
+		} else {
+			Node5 current = first;
+			Node5 prev = null;
+			do {
+				int compareResult = cc.compare(current.data, element);
+				if (compareResult >= 0) {
+					break;
+				}
+				prev = current;
+				current = current.link;
+			} while (current != first);
 
-            newNode.link = current;
-            if (prev != null) {
-                prev.link = newNode;
-            } else {
-                // 새 노드가 첫 번째 노드가 됨
-                Node5 last = first;
-                while (last.link != first) {
-                    last = last.link;
-                }
-                last.link = newNode;
-                first = newNode;
-            }
-        }
-    }
+			newNode.link = current;
+			if (prev != null) {
+				prev.link = newNode;
+			} else {
+				// 새 노드가 첫 번째 노드가 됨
+				Node5 last = first;
+				while (last.link != first) {
+					last = last.link;
+				}
+				last.link = newNode;
+				first = newNode;
+			}
+		}
+	}
 
 	public boolean Search(SimpleObject4 element, Comparator<SimpleObject4> cc) { // 전체 리스트를 순서대로 출력한다.
 		if (first == null) {
-            return false; // 리스트가 비어있음
-        }
-        Node5 current = first;
-        do {
-            if (cc.compare(current.data, element) == 0) {
-                return true; // 검색 성공
-            }
-            current = current.link;
-        } while (current != first);
-        return false; // 검색 실패
-    }
-	void Merge(CircularList4 b, Comparator<SimpleObject4> cc) {
-	    // b 리스트가 비어있으면 아무 작업도 하지 않음
-	    if (b.first == null) {
-	        return;
-	    }
-	    
-	    // 현재 리스트(this)가 비어있으면 b 리스트를 그대로 복사하여 합병
-	    if (first == null) {
-	        first = b.first;
-	        return;
-	    }
-	    
-	    Node5 currentA = first;
-	    Node5 currentB = b.first;
-	    Node5 lastA = first;
-	    
-	    // 현재 리스트(this)의 마지막 노드를 찾음
-	    while (lastA.link != first) {
-	        lastA = lastA.link;
-	    }
-	    
-	    // 현재 리스트의 첫 번째 노드와 b 리스트의 첫 번째 노드를 비교하여 합병 정렬
-	    while (currentA != lastA && currentB != b.first) {
-	        if (cc.compare(currentA.data, currentB.data) <= 0) {
-	            currentA = currentA.link;
-	        } else {
-	            Node5 nextB = currentB.link;
-	            lastA.link = currentB;
-	            currentB.link = currentA;
-	            currentB = nextB;
-	        }
-	    }
-	    
-	    // b 리스트에 남아 있는 노드들을 합병 결과에 추가
-	    if (currentA == lastA) {
-	        lastA.link = currentB;
-	    }
-	    
-	    // 합병 후, 원형 리스트의 마지막 노드를 첫 번째 노드와 연결하여 원형을 유지
-	    while (lastA.link != first) {
-	        lastA = lastA.link;
-	    }
-	    lastA.link = first;
+			return false; // 리스트가 비어있음
+		}
+		Node5 current = first;
+		do {
+			if (cc.compare(current.data, element) == 0) {
+				return true; // 검색 성공
+			}
+			current = current.link;
+		} while (current != first);
+		return false; // 검색 실패
 	}
+	public void Merge(CircularList4 b, Comparator<SimpleObject4> cc) {
+		if( b.first == null) {
+			return;
+		}
+		if(first == null) {
+			first = b.first;
+			return;
+		}
+		
+		Node5 p = first;
+		Node5 q = b.first;
+		Node5 pPrev = null;
+		boolean tag = true;
+		
+		if(cc.compare(p.data, q.data) > 0) {
+			first = q;
+			Node5 temp = q.link;
+			q.link = p;
+			pPrev = q;
+			q = temp;
+		} else {
+			pPrev = p;
+			p = p.link;
+		}
+		tag = false;
+		
+		while (p != first && q != b.first) {
+			if(cc.compare(p.data, q.data) > 0) {
+				Node5 temp = q;
+				q = q.link;
+				pPrev.link = temp;
+				temp.link = p;
+				pPrev = temp;
+			} else {
+				pPrev = p;
+				p = p.link;
+			}
+		}
+		
+		if(q != b.first) {
+			pPrev.link = q;
+			while(q.link != b.first) {
+				q = q.link;
+			}
+			q.link = first;
+		} else {
+			while(p.link != first) {
+				p = p.link;
+			}
+			p.link = first;
+		}
+		
+		
+	}
+
+
+
 
 }
 public class 실습9_4객체원형리스트2 {

@@ -69,7 +69,6 @@ class Node4 {
 	SimpleObject2 data; // 데이터
 	Node4 llink; // 좌측포인터(앞쪽 노드에 대한 참조)
 	Node4 rlink; // 우측포인터(뒤쪽 노드에 대한 참조)
-
 }
 
 class DoubledLinkedList2 {
@@ -78,6 +77,8 @@ class DoubledLinkedList2 {
 	// --- 생성자(constructor) ---//
 	public DoubledLinkedList2() {
 		first = new Node4(); // dummy(first) 노드를 생성
+		first.llink = first;
+		first.rlink = first;
 
 	}
 
@@ -88,37 +89,95 @@ class DoubledLinkedList2 {
 
 	// --- 노드를 검색 ---//
 	public boolean search(SimpleObject2 obj, Comparator<? super SimpleObject2> c) {
+		Node4 p = first.rlink;
+		SimpleObject2 so;
+		while(p != first) {
+			so = p.data;
+			if(c.compare(so, obj)==0) {
+				System.out.print("찾은 데이터:" + so);
+				return true;
+			}
+			p = p.rlink;
+		}
 		return false;
-
 	}
 
 	// --- 전체 노드 표시 ---//
 	public void show() {
-
+		if (isEmpty()) {
+            System.out.println("리스트가 없습니다");
+            return;
+        }
+        Node4 current = first.rlink;
+        while (current != first) {
+            System.out.println(current.data);
+            current = current.rlink;
+        }
 	}
 
 	// --- 올림차순으로 정렬이 되도록 insert ---//
 	public void add(SimpleObject2 obj, Comparator<? super SimpleObject2> c) {
+		Node4 newNode = new Node4();
+        newNode.data = obj;
 
+        Node4 current = first.rlink;
+        while (current != first && c.compare(current.data, obj) < 0) {
+            current = current.rlink;
+        }
 
+        newNode.rlink = current;
+        newNode.llink = current.llink;
+        current.llink.rlink = newNode;
+        current.llink = newNode;
 	}
 
 	// --- list에 삭제할 데이터가 있으면 해당 노드를 삭제 ---//
 	public void delete(SimpleObject2 obj, Comparator<? super SimpleObject2> c) {
+		Node4 current = first.rlink;
 
+        while (current != first) {
+            if (c.compare(current.data, obj) == 0) {
+                current.llink.rlink = current.rlink;
+                if (current.rlink != first) {
+                    current.rlink.llink = current.llink;
+                }
+                return;
+            }
+            current = current.rlink;
+        }
+        System.out.println("삭제할 데이터가 존재하지 않습니다: " + obj);
 	}
 	public DoubledLinkedList2 merge_NewList(DoubledLinkedList2 lst2, Comparator<SimpleObject2> cc) {
 		//l3 = l1.merge(l2); 실행하도록 리턴 값이 리스트임 
 		//l.add(객체)를 사용하여 구현
 		//기존 리스트의 노드를 변경하지 않고 새로운 리스트의 노드들을 생성하여 구현 
 		DoubledLinkedList2 lst3 = new DoubledLinkedList2();
-		Node4 ai = this.first.rlink, bi = lst2.first.rlink;
+		Node4 ai = this.first.rlink;
+		Node4 bi = lst2.first.rlink;
+		
+		while (ai != first && bi != lst2.first) {
+            if (cc.compare(ai.data, bi.data) <= 0) {
+                lst3.add(ai.data, cc); 
+                ai = ai.rlink;
+            } else {
+                lst3.add(bi.data, cc); 
+                bi = bi.rlink;
+            }
+        }
 
+        while (ai != first) {
+            lst3.add(ai.data, cc);
+            ai = ai.rlink;
+        }
 
+        while (bi != lst2.first) {
+            lst3.add(bi.data, cc);
+            bi = bi.rlink;
+        }
 
-		return lst3;
+        return lst3;
+    }
 
-	}
 	void merge_InPlace(DoubledLinkedList2 b, Comparator<SimpleObject2> cc) {
 		/*
 		 * 연결리스트 a,b에 대하여 a = a + b
@@ -133,7 +192,7 @@ class DoubledLinkedList2 {
 	}
 }
 
-public class 실습9_6객체이중리스트 {
+public class 실습8_6객체이중리스트_test {
 	enum Menu {
 		Add("삽입"), Delete("삭제"), Show("인쇄"), Search("검색"), Merge_NewList("병합-새리스트"), Merge_InPlace("병합-제자리"), Exit("종료");
 
@@ -192,7 +251,7 @@ public class 실습9_6객체이중리스트 {
 					lst1.add(simpleobjects[i], SimpleObject2.NO_ORDER );
 				break;
 			case Delete: // 임의 객체를 삭제
-				so =  new SimpleObject2();
+				so = new SimpleObject2();
 				so.scanData("삭제", SimpleObject2.NO);
 				lst1.delete(so, SimpleObject2.NO_ORDER);
 				break;
@@ -200,7 +259,7 @@ public class 실습9_6객체이중리스트 {
 				lst1.show();
 				break;
 			case Search: // 회원 번호 검색
-				so =  new SimpleObject2();
+				so = new SimpleObject2();
 				so.scanData("탐색", SimpleObject2.NO);
 				result = lst1.search(so, SimpleObject2.NO_ORDER);
 				if (!result)
