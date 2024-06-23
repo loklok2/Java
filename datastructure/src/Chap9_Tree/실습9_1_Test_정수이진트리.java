@@ -12,7 +12,7 @@ class TreeNode5 {
 	int data;
 	TreeNode5 RightChild;
 
-	public TreeNode5() {
+	public TreeNode5(int x) {
 		LeftChild = RightChild = null;
 	}
 }
@@ -62,7 +62,7 @@ class ObjectStack5{
 
 //--- 스택에서 데이터를 팝(정상에 있는 데이터를 꺼냄) ---//
 	public TreeNode5 pop() throws EmptyGenericStackException  {
-		if (top < 0)
+		if (top <= 0)
 			throw new EmptyGenericStackException();
 		return data.remove(--top);
 	}
@@ -324,7 +324,7 @@ class Tree5 { //
 		TreeNode5 newNode = new TreeNode5(x);
 		TreeNode5 p = root;
 		TreeNode5 q = null;
-//		boolean tag = true;
+		boolean tag = true;
 		//p가 널이면 새로운 노드로 추가하는 로직 링크드리스트랑 비슷하나, 다르다 
 		if(p==null) {
 			root = newNode;
@@ -356,9 +356,6 @@ class Tree5 { //
 		if (root == null)
 			return false;
 		
-		return false;
-
-	}
 
 	boolean search(int num) {//num 값을 binary search tree에서 검색
 		TreeNode5 p = root;

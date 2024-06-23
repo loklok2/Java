@@ -152,43 +152,62 @@ class DoubledLinkedList2 {
 		//l.add(객체)를 사용하여 구현
 		//기존 리스트의 노드를 변경하지 않고 새로운 리스트의 노드들을 생성하여 구현 
 		DoubledLinkedList2 lst3 = new DoubledLinkedList2();
-		Node4 ai = this.first.rlink;
-		Node4 bi = lst2.first.rlink;
-		
-		while (ai != first && bi != lst2.first) {
-            if (cc.compare(ai.data, bi.data) <= 0) {
-                lst3.add(ai.data, cc); 
+        Node4 ai = this.first.rlink;
+        Node4 bi = lst2.first.rlink;
+
+        while (ai != this.first || bi != lst2.first) {
+            if (ai == this.first) {
+                lst3.add(bi.data, cc);
+                bi = bi.rlink;
+            } else if (bi == lst2.first) {
+                lst3.add(ai.data, cc);
                 ai = ai.rlink;
             } else {
-                lst3.add(bi.data, cc); 
-                bi = bi.rlink;
+                if (cc.compare(ai.data, bi.data) <= 0) {
+                    lst3.add(ai.data, cc);
+                    ai = ai.rlink;
+                } else {
+                    lst3.add(bi.data, cc);
+                    bi = bi.rlink;
+                }
             }
         }
-
-        while (ai != first) {
-            lst3.add(ai.data, cc);
-            ai = ai.rlink;
-        }
-
-        while (bi != lst2.first) {
-            lst3.add(bi.data, cc);
-            bi = bi.rlink;
-        }
-
         return lst3;
     }
-
+	/*
+	 * 연결리스트 a,b에 대하여 a = a + b
+	 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
+	 * 난이도 등급: 최상급
+	 * 회원번호에 대하여 a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
+	 */
 	void merge_InPlace(DoubledLinkedList2 b, Comparator<SimpleObject2> cc) {
-		/*
-		 * 연결리스트 a,b에 대하여 a = a + b
-		 * merge하는 알고리즘 구현으로 in-place 방식으로 합병/이것은 새로운 노드를 만들지 않고 합병하는 알고리즘 구현
-		 * 난이도 등급: 최상급
-		 * 회원번호에 대하여 a = (3, 5, 7), b = (2,4,8,9)이면 a = (2,3,4,5,8,9)가 되도록 구현하는 코드
-		 */
-		Node4 p = first.rlink, q = b.first.rlink;
-		Node4 temp = null;
+	    Node4 p = this.first.rlink; // 'a' 리스트의 첫 노드
+	    Node4 q = b.first.rlink;    // 'b' 리스트의 첫 노드
+	    Node4 temp = null;          // 'q'의 다음 노드를 추적할 임시 노드
 
+	    while (q != b.first) {      // 'b' 리스트의 끝에 도달할 때까지
+	        temp = q.rlink;         // 'q'의 다음 노드를 저장
+	        
+	        // b 리스트에서 q 노드를 제거
+	        q.llink.rlink = q.rlink;
+	        q.rlink.llink = q.llink;
 
+	        // 'a' 리스트에서 q의 올바른 삽입 위치를 찾기
+	        while (p != this.first && cc.compare(p.data, q.data) < 0) {
+	            p = p.rlink;
+	        }
+
+	        // 'a' 리스트에서 p 노드 앞에 q를 삽입
+	        q.llink = p.llink;
+	        q.rlink = p;
+	        p.llink.rlink = q;
+	        p.llink = q;
+
+	        // 'q'가 삽입된 후, 'p'를 다시 'a' 리스트의 시작으로 초기화
+	        p = this.first.rlink;
+	        // 'q'를 다음 노드로 갱신
+	        q = temp;
+	    }
 	}
 }
 
