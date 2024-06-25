@@ -14,6 +14,7 @@ class TreeNode5 {
 
 	public TreeNode5(int x) {
 		LeftChild = RightChild = null;
+		data = x; //생성자 추가
 	}
 }
 
@@ -232,17 +233,17 @@ class Tree5 { //
 		root = null;
 	}
 
-	TreeNode5 inorderSucc(TreeNode5 current) { //current는 5
-		TreeNode5 temp = current.RightChild;    // temp = 4
-		if (current.RightChild != null)
+	TreeNode5 inorderSucc(TreeNode5 p) { //p는 5
+		TreeNode5 temp = p.RightChild;    // temp = 4
+		if (p.RightChild != null)
 			while (temp.LeftChild != null)
 				temp = temp.LeftChild;
 		System.out.println("inordersucc:: temp.data = "+temp.data);
 		return temp;
 	}
 
-	boolean isLeafNode(TreeNode5 current) {
-		if (current.LeftChild == null && current.RightChild == null)
+	boolean isLeafNode(TreeNode5 p) {
+		if (p.LeftChild == null && p.RightChild == null)
 			return true;
 		else
 			return false;
@@ -260,49 +261,48 @@ class Tree5 { //
 		postorder(root);	//+AB
 	}
 
-	void inorder(TreeNode5 CurrentNode) {  //workhorse함수  //위에 inorder에서 오버로딩된 메서드 얘는 리커시브(재귀)다 //수정,구현 불필요
-		if (CurrentNode != null) {								//다만, 스택을 사용해서 넌리커시브로 바꿔주는 코드가 필요 아래의 NonrecInorder
-			inorder(CurrentNode.LeftChild); // L:LeftChild
-			System.out.print(" " + CurrentNode.data); //V:visit node
-			inorder(CurrentNode.RightChild);// R:RightChild
+	void inorder(TreeNode5 pNode) {  //workhorse함수  //위에 inorder에서 오버로딩된 메서드 얘는 리커시브(재귀)다 //수정,구현 불필요
+		if (pNode != null) {								//다만, 스택을 사용해서 넌리커시브로 바꿔주는 코드가 필요 아래의 NonrecInorder
+			inorder(pNode.LeftChild); // L:LeftChild
+			System.out.print(" " + pNode.data); //V:visit node
+			inorder(pNode.RightChild);// R:RightChild
 		}
 	}
 
-	void preorder(TreeNode5 CurrentNode) {
-		if (CurrentNode != null) {
-			System.out.print(CurrentNode.data + " ");
-			preorder(CurrentNode.LeftChild);
-			preorder(CurrentNode.RightChild);
+	void preorder(TreeNode5 pNode) {
+		if (pNode != null) {
+			System.out.print(pNode.data + " ");
+			preorder(pNode.LeftChild);
+			preorder(pNode.RightChild);
 		}
 	}
 
-	void postorder(TreeNode5 CurrentNode) {
-		if (CurrentNode != null) {
-			postorder(CurrentNode.LeftChild);
-			postorder(CurrentNode.RightChild);
-			System.out.print(CurrentNode.data + " ");
+	void postorder(TreeNode5 pNode) {
+		if (pNode != null) {
+			postorder(pNode.LeftChild);
+			postorder(pNode.RightChild);
+			System.out.print(pNode.data + " ");
 		}
 	}
 
-	void NonrecInorder()//void Tree5::inorder(TreeNode5 *CurrentNode)와 비교
+	void NonrecInorder()//void Tree5::inorder(TreeNode5 *pNode)와 비교
 	//stack을 사용한 inorder 출력
 	{
 		ObjectStack5 s = new ObjectStack5(20); //스택사용
-		TreeNode5 CurrentNode = root;
+		TreeNode5 pNode = root;
 		while (true) {
-			while (CurrentNode != null) { // inorder(CurrentNode.LeftChild) 처리 스택을 이용해서 처리하고 왼쪽을 이용해서 타고 내려간다
-				s.push(CurrentNode);
-				CurrentNode = CurrentNode.LeftChild;
+			while (pNode != null) { // inorder(pNode.LeftChild) 처리 스택을 이용해서 처리하고 왼쪽을 이용해서 타고 내려간다
+				s.push(pNode);
+				pNode = pNode.LeftChild;
 			}
 			if (!s.isEmpty()) {
 				try {
-					CurrentNode = s.pop(); //넣고
+					pNode = s.pop(); //넣고
 				} catch (Chap9_Tree.ObjectStack5.EmptyGenericStackException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println(" " + CurrentNode.data); //출력하고
-				CurrentNode = CurrentNode.RightChild; //inorder(CurrentNode.RightChild) 처리 //ex)꼬리부분제거
+				System.out.println(" " + pNode.data); //출력하고
+				pNode = pNode.RightChild; //inorder(pNode.RightChild) 처리 //ex)꼬리부분제거
 			}
 			else break;  
 		}
@@ -311,16 +311,32 @@ class Tree5 { //
 	//난이도: 최상급 구현  //화면에 출력할때 레벨별로 출력하고 칸을 띄워서 구분하여 트리 모양 처럼 출력하는거 
 	{
 		ObjectQueue5 q = new ObjectQueue5(20);
-		Queue<Integer> que = new LinkedList<>();
-		int oldLevel = 0,  newLevel=0;
-		que.add(oldLevel+1);
-		TreeNode5 CurrentNode = root;
-		newLevel = que.remove();
+		TreeNode5 p = root;
+		q.enque(p);
+		int nowlevel = 0;
+		int nextlevel = 0;
+		while (!q.isEmpty()) {
+			p = q.deque();
+			System.out.println(p.data + " ");
+			nowlevel--;
+			if (p.LeftChild != null) {
+				q.enque(p.LeftChild);
+				nextlevel++;
+			}else if (p.RightChild != null)
+				q.enque(p.RightChild);
+			nextlevel++;
+
+		}
+	}		
+
+
+	
 		
-	}
+
+	
 
 	boolean insert(int x) {// binary search tree를 만드는 입력 : left subtree < 노드 x < right subtree
-		//inorder traversal시에 정렬된 결과가 나와야 한다
+		//inorder traversal시에 정렬된 결과가 나와야 한다    
 		TreeNode5 newNode = new TreeNode5(x);
 		TreeNode5 p = root;
 		TreeNode5 q = null;
@@ -328,6 +344,7 @@ class Tree5 { //
 		//p가 널이면 새로운 노드로 추가하는 로직 링크드리스트랑 비슷하나, 다르다 
 		if(p==null) {
 			root = newNode;
+			return tag;
 		}
 		while(p!=null) {
 			q = p;
@@ -349,16 +366,95 @@ class Tree5 { //
 	}
 
 	boolean delete(int num) {//binary search tree에서 임의 값을 갖는 노드를 찾아 삭제한다.
-		//삭제 대상이 leaf node인 경우, non-leaf node로 구분하여 구현한다 
+		//삭제 대상이 leaf node인 경우, non-leaf node로 구분하여 구현한다   //inorde로 구현해야함
 		//leaf 노드는 ㅣ,r 이 둘다 null이면 leaf node
 		TreeNode5 p = root, q = null, parent = null;
 		int branchMode = 0; // 1은 left, 2는 right
-		if (root == null)
+		if (root == null) {
 			return false;
-		
+		}
+		//1. 자식노드가 없는 경우
+		//2. 자식노드가 하나인 경우
+		//3. 자식노드가 둘인 경우
+		while (p != null) { 
+	        if (p.data == num) {
+	            q = p;
+	            break;
+	        }
+	        parent = p;
+	        if (num < p.data) {
+	            p = p.LeftChild;
+	            branchMode = 1; // 왼쪽 자식 노드
+	        } else {
+	            p = p.RightChild;
+	            branchMode = 2; // 오른쪽 자식 노드
+	        }
+	    }
+
+	    if (q == null) { 
+	        return false; // 삭제할 노드를 찾지 못함			
+	    }
+
+	    if (q.LeftChild == null && q.RightChild == null) { // leaf 노드인 경우
+	        if (q == root) {
+	            root = null;
+	        } else {
+	            if (branchMode == 1) { // 왼쪽 자식 노드이면
+	                parent.LeftChild = null;  // 왼쪽 자식을 null로 설정
+	            } else { // 오른쪽 자식 노드이면
+	                parent.RightChild = null;  // 오른쪽 자식을 null로 설정
+	            }
+	        }
+	    } else if (q.LeftChild == null || q.RightChild == null) { // 자식 노드가 하나인 경우
+	        TreeNode5 child;
+	        if (q.LeftChild != null) {
+	            child = q.LeftChild;
+	        } else {
+	            child = q.RightChild;
+	        }
+
+	        if (q == root) {
+	            root = child;
+	        } else {
+	            if (branchMode == 1) {
+	                parent.LeftChild = child;
+	            } else {
+	                parent.RightChild = child;
+	            }
+	        }
+	    } else { // 자식 노드가 둘인 경우
+	        TreeNode5 succParent = q;
+	        TreeNode5 succ = q.RightChild;
+	        while (succ.LeftChild != null) {
+	            succParent = succ;
+	            succ = succ.LeftChild;
+	        }
+
+	        q.data = succ.data;
+	        if (succParent.LeftChild == succ) {
+	            succParent.LeftChild = succ.RightChild;
+	        } else {
+	            succParent.RightChild = succ.RightChild;
+	        }
+	    }
+
+	    return true;
+	}
+
+
 
 	boolean search(int num) {//num 값을 binary search tree에서 검색
 		TreeNode5 p = root;
+		while (p != null) {
+	        if (p.data == num) {
+	            return true; // 값 발견
+	        } else if (num < p.data) {
+	            p = p.LeftChild; // 왼쪽 서브트리로 이동
+	        } else {
+	            p = p.RightChild; // 오른쪽 서브트리로 이동
+	        }
+	    }
+	    return false; // 값 발견하지 못함
 
 	}
 }
