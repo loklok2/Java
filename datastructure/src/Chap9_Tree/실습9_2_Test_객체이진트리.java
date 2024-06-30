@@ -364,29 +364,99 @@ class Tree4 {
 	public boolean add(SimpleObject4 obj, Comparator<? super SimpleObject4> c) {
 		//inorder로 출력시에 정렬이 되도록 입력: binary search tree를 구현
 		// left subtree < x < right subtree
-		TreeNode4 p = root;
-		TreeNode4 q = null;
+		TreeNode4 p = root; //루트부터 시작하고, q는 부모노드를 추적하기위해서 사용
+        TreeNode4 q = null;
 
-	}
+        while (p != null) { //p는 null이 아니면
+            q = p; //현재 노드를 부모노드로 
+            int comp = c.compare(obj, p.data);
+            if (comp == 0) return false;  // 중복된 키는 허용하지 않음
+            else if (comp < 0) p = p.LeftChild;
+            else p = p.RightChild;
+        }
+
+        TreeNode4 newNode = new TreeNode4(obj);
+        if (root == null) root = newNode;
+        else if (c.compare(obj, q.data) < 0) q.LeftChild = newNode;
+        else q.RightChild = newNode;
+
+        return true;
+    }
+
 
 	public boolean delete(SimpleObject4 obj, Comparator<? super SimpleObject4> c) {
 		//주어진 객체 obj를 포함한 노드를 찾아 삭제하는 알고리즘
 		//난이도: 최상급 중에서 최상급
 		TreeNode4 p = root, q = null;
+		boolean found = false;
 
+        while (p != null) {
+            int comp = c.compare(obj, p.data);
+            if (comp == 0) {
+                found = true;
+                break;
+            }
+            q = p;
+            if (comp < 0) p = p.LeftChild;
+            else p = p.RightChild;
+        }
 
-	}
+        if (!found) return false;  // 삭제할 노드를 찾지 못함
+
+        if (p.LeftChild == null && p.RightChild == null) {  //리프 노드 일때
+            if (q == null) {
+            	root = null;            	
+            }
+            else if (q.LeftChild == p) {
+            	q.LeftChild = null;            	
+            }
+            else {
+            	q.RightChild = null;            	
+            }
+        } else if (p.LeftChild == null || p.RightChild == null) {  // 자식이 하나일때
+            TreeNode4 child = (p.LeftChild != null) ? p.LeftChild : p.RightChild;
+            if (q == null) {
+            	root = child;
+            }
+            else if (q.LeftChild == p) {
+            	q.LeftChild = child;
+            }
+            else {
+            	q.RightChild = child;
+            }
+        } else {  // 자식이 두개일때
+            TreeNode4 succ = inorderSucc(p);
+            delete(succ.data, c);
+            p.data = succ.data;
+        }
+        return true;
+    }
 
 	boolean search(SimpleObject4 obj, Comparator<? super SimpleObject4> c) {
 		//주어진 객체 obj를 갖는 노드를 찾는 문제
 		TreeNode4 p = root;
-
-	}
+		while (p != null) {
+            int comp = c.compare(obj, p.data);
+            if (comp == 0) return true;
+            else if (comp < 0) p = p.LeftChild;
+            else p = p.RightChild;
+        }
+        return false;
+    }
 	void levelOrder() 
 	//root 부터 level별로 출력 : root는 level 1, level 2는 다음줄에 => 같은 level이면 같은 줄에 출력하게 한다 
 	{
 		ObjectQueue4 q = new ObjectQueue4(20);
 		TreeNode4 CurrentNode = root;
+		
+		if (CurrentNode == null) return;
+
+	    q.enque(CurrentNode);
+
+	    while (!q.isEmpty()) {
+	        
+
+	    }
 
 	}
 	void NonrecInorder()//void Tree::inorder(TreeNode4 *CurrentNode)와 비교

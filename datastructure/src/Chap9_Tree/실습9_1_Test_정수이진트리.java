@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
 
+
 class TreeNode5 {
 	TreeNode5 LeftChild;
 	int data;
@@ -310,24 +311,42 @@ class Tree5 { //
 	void levelOrder() //level 별로 출력한다. level이 증가하면 다음줄에 출력한다 
 	//난이도: 최상급 구현  //화면에 출력할때 레벨별로 출력하고 칸을 띄워서 구분하여 트리 모양 처럼 출력하는거 
 	{
+		if (root == null) return;
+
 		ObjectQueue5 q = new ObjectQueue5(20);
 		TreeNode5 p = root;
 		q.enque(p);
-		int nowlevel = 0;
+		int nowlevel = 1;
 		int nextlevel = 0;
+		int currentLevel = 0;
+
+		System.out.println("Level " + currentLevel + " ");
+
 		while (!q.isEmpty()) {
-			p = q.deque();
-			System.out.println(p.data + " ");
+			p = (TreeNode5) q.deque();
+			System.out.print(p.data + " ");
 			nowlevel--;
+
 			if (p.LeftChild != null) {
 				q.enque(p.LeftChild);
 				nextlevel++;
-			}else if (p.RightChild != null)
+			}
+			if (p.RightChild != null) {
 				q.enque(p.RightChild);
-			nextlevel++;
+				nextlevel++;
+			}
 
+			if (nowlevel == 0) {
+				System.out.println();
+				nowlevel = nextlevel;
+				nextlevel = 0;
+				currentLevel++;
+				if (!q.isEmpty()) {
+					System.out.println("Level " + currentLevel + " ");
+				}
+			}
 		}
-	}		
+	}
 
 
 	
@@ -366,17 +385,16 @@ class Tree5 { //
 	}
 
 	boolean delete(int num) {//binary search tree에서 임의 값을 갖는 노드를 찾아 삭제한다.
-		//삭제 대상이 leaf node인 경우, non-leaf node로 구분하여 구현한다   //inorde로 구현해야함
+		//삭제 대상이 leaf node인 경우, non-leaf node로 구분하여 구현한다 
 		//leaf 노드는 ㅣ,r 이 둘다 null이면 leaf node
 		TreeNode5 p = root, q = null, parent = null;
-		int branchMode = 0; // 1은 left, 2는 right
-		if (root == null) {
-			return false;
-		}
-		//1. 자식노드가 없는 경우
-		//2. 자식노드가 하나인 경우
-		//3. 자식노드가 둘인 경우
-		while (p != null) { 
+	    int branchMode = 0; // 1은 left, 2는 right
+
+	    if (root == null) {
+	        return false;
+	    }
+
+	    while (p != null) { 
 	        if (p.data == num) {
 	            q = p;
 	            break;
@@ -384,35 +402,32 @@ class Tree5 { //
 	        parent = p;
 	        if (num < p.data) {
 	            p = p.LeftChild;
-	            branchMode = 1; // 왼쪽 자식 노드
+	            branchMode = 1;
 	        } else {
 	            p = p.RightChild;
-	            branchMode = 2; // 오른쪽 자식 노드
+	            branchMode = 2;
 	        }
 	    }
 
 	    if (q == null) { 
-	        return false; // 삭제할 노드를 찾지 못함			
+	        return false;           
 	    }
 
-	    if (q.LeftChild == null && q.RightChild == null) { // leaf 노드인 경우
+	    //자식 노드가 없는 경우
+	    if (q.LeftChild == null && q.RightChild == null) {
 	        if (q == root) {
 	            root = null;
 	        } else {
-	            if (branchMode == 1) { // 왼쪽 자식 노드이면
-	                parent.LeftChild = null;  // 왼쪽 자식을 null로 설정
-	            } else { // 오른쪽 자식 노드이면
-	                parent.RightChild = null;  // 오른쪽 자식을 null로 설정
-	            }
+	            if (branchMode == 1) {
+	                parent.LeftChild = null;
+	            } else {
+	                parent.RightChild = null;
+	            }   
 	        }
-	    } else if (q.LeftChild == null || q.RightChild == null) { // 자식 노드가 하나인 경우
-	        TreeNode5 child;
-	        if (q.LeftChild != null) {
-	            child = q.LeftChild;
-	        } else {
-	            child = q.RightChild;
-	        }
-
+	    }
+	    //자식 노드가 하나인 경우
+	    else if (q.LeftChild == null || q.RightChild == null) {
+	        TreeNode5 child = (q.LeftChild != null) ? q.LeftChild : q.RightChild;
 	        if (q == root) {
 	            root = child;
 	        } else {
@@ -422,20 +437,13 @@ class Tree5 { //
 	                parent.RightChild = child;
 	            }
 	        }
-	    } else { // 자식 노드가 둘인 경우
-	        TreeNode5 succParent = q;
-	        TreeNode5 succ = q.RightChild;
-	        while (succ.LeftChild != null) {
-	            succParent = succ;
-	            succ = succ.LeftChild;
-	        }
-
-	        q.data = succ.data;
-	        if (succParent.LeftChild == succ) {
-	            succParent.LeftChild = succ.RightChild;
-	        } else {
-	            succParent.RightChild = succ.RightChild;
-	        }
+	    }
+	    //자식 노드가 둘인 경우
+	    else {
+	        TreeNode5 successor = inorderSucc(q);
+	        int successorData = successor.data;
+	        delete(successorData);
+	        q.data = successorData;
 	    }
 
 	    return true;
