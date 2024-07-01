@@ -15,11 +15,28 @@ class OpenHash2 {
 	static class Bucket {
 		private int data;                   // 데이터
 		private Status stat;       // 상태
+		
+		//생성자//
 		Bucket(){
 			stat = Status.EMPTY;
 		}
 
+		public int getData() {
+			return data;
+		}
 
+		public void setData(int data) {
+			this.data = data;
+		}
+
+		public Status getStat() {
+			return stat;
+		}
+
+		public void setStat(Status stat) {
+			this.stat = stat;
+		}
+	
 	}
 
 	private int size;               // 해시 테이블의 크기
@@ -27,6 +44,15 @@ class OpenHash2 {
 
 	//--- 생성자(constructor) ---//
 	public OpenHash2(int size) {
+		try {
+			table = new Bucket[size];
+			for (int i; i < size; i++) {
+				table[i] = new Bucket();
+			}
+			this.size = size;
+		} catch(OutOfMemoryError e) {
+			this.size = 0;
+		}
 
 	}
 

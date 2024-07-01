@@ -446,19 +446,43 @@ class Tree4 {
 	void levelOrder() 
 	//root 부터 level별로 출력 : root는 level 1, level 2는 다음줄에 => 같은 level이면 같은 줄에 출력하게 한다 
 	{
+		
 		ObjectQueue4 q = new ObjectQueue4(20);
 		TreeNode4 CurrentNode = root;
 		
 		if (CurrentNode == null) return;
-
-	    q.enque(CurrentNode);
-
-	    while (!q.isEmpty()) {
-	        
-
-	    }
-
+		
+		q.enque(CurrentNode);
+		int nowLevel = 1;
+		int NextLevel = 0;
+		int currnetLevel = 0;
+		//큐가 비어있지 않는 동안 반복
+		while (!q.isEmpty()) {
+			try {
+				CurrentNode = q.deque();
+				System.out.println(CurrentNode.data + " ");
+				nowLevel--;
+				if(CurrentNode.LeftChild == null) {
+					q.enque(CurrentNode.LeftChild);
+					NextLevel++;
+				}
+				if(CurrentNode.RightChild == null){
+					q.enque(CurrentNode.RightChild);
+					NextLevel++;
+				}
+				if(nowLevel == 0) {
+					System.out.println();
+					currnetLevel++;
+					nowLevel = NextLevel;
+					NextLevel = 0;	
+				}
+			} catch(ObjectQueue4.EmptyQueueException e) {
+				break;
+			}
+		}
+		
 	}
+	
 	void NonrecInorder()//void Tree::inorder(TreeNode4 *CurrentNode)와 비교
 	//stack을 이용하여 inorder traversal하는 알고리즘 구현
 	{

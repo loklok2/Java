@@ -3,7 +3,7 @@ package Chap11_그래프;
 /*
  Graph Representation
  Adjacency Lists + BFS + DFS
-*/
+ */
 
 import java.util.Scanner;
 
@@ -102,8 +102,8 @@ class Queue {
 		// 구현할 부분
 	}
 
-	int Delete()
-	// 구현할 부분
+	int Delete() {
+		// 구현할 부분
 	}
 }
 class StackNode {
@@ -158,7 +158,7 @@ class Graph {
 			HeadNodes[i] = new List();
 			visited[i] = false;
 		}
-		
+
 	}
 
 	void displayAdjacencyLists() {
@@ -217,12 +217,12 @@ class Graph {
 		}
 	}
 	// Workhorse 2
-		void _NonRecursiveDFS(int v)
-		// visit all previously unvisited vertices that are reachable from vertex v
-		{
-			// 구현할 부분
-			
-		}
+	void _NonRecursiveDFS(int v)
+	// visit all previously unvisited vertices that are reachable from vertex v
+	{
+		// 구현할 부분
+
+	}
 }
 public class Chap11_test_그래프DFS_BFS {
 	public static void main(String[] args) {
@@ -281,4 +281,3 @@ public class Chap11_test_그래프DFS_BFS {
 		return;
 	}
 }
-*/
