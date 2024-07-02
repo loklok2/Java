@@ -50,6 +50,16 @@ class Heap implements MaxHeap {
 		System.out.println("Heap Full");
 	}
 }
+class InputGraph2 {
+	int start;
+	int end;
+	int weight;
+	public InputGraph2(int start, int end, int weight) {
+		this.start = start;
+		this.end = end;
+		this.weight = weight;
+	}
+}
 public class Chap11_test_minimalspanningtree {
 
 	//The main function to construct MST using Kruskal's algorithm
@@ -116,22 +126,16 @@ public class Chap11_test_minimalspanningtree {
 			switch (select) {
 
 			case 1:
-				System.out.println("edge 추가: from vertext: ");
-				startEdge = sc.nextInt();
-				System.out.println("to vertex: ");
-				endEdge = sc.nextInt();
-				System.out.println("가중치: ");
-				weight = sc.nextInt();
-				if (startEdge < 0 || startEdge >= n || endEdge < 0 || endEdge >= n) {
-					System.out.println("the input node is out of bound.");
-					break;
+				InputGraph2 []inputData = 	{new InputGraph2(0,1,28), new InputGraph2(0,5,10),new InputGraph2(1,2,16),
+						new InputGraph2(1,6,14),new InputGraph2(2,3,12),new InputGraph2(3,4,22),
+						new InputGraph2(3,6,18),new InputGraph2(4,6,24),new InputGraph2(4,5,25)};
+				for (int i = 0; i < inputData.length;i++) {
+					startEdge = inputData[i].start;
+					endEdge = inputData[i].end;
+					weight = inputData[i].weight;
+					graph.InsertVertex(startEdge, endEdge, weight);
 				}
-				// get smallest start node.
-				if (startEdge < startBFSNode)
-					startBFSNode = startEdge;
-				if (endEdge < startBFSNode)
-					startBFSNode = endEdge;
-				graph.InsertVertex(startEdge, endEdge, weight);
+
 				break;
 			case 2:
 				//display

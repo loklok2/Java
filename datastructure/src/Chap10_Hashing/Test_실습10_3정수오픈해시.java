@@ -46,7 +46,7 @@ class OpenHash2 {
 	public OpenHash2(int size) {
 		try {
 			table = new Bucket[size];
-			for (int i; i < size; i++) {
+			for (int i =0; i < size; i++) {
 				table[i] = new Bucket();
 			}
 			this.size = size;
@@ -60,6 +60,9 @@ class OpenHash2 {
 	public int hashValue(int key) {
 		return hashCode() % size;
 	}
+//	public int hashValue(int key) {
+//	    return key % size;
+//	}
 
 	//--- 재해시값을 구함 ---//
 	public int rehashValue(int hash) {
@@ -68,27 +71,72 @@ class OpenHash2 {
 
 	//--- 키값 key를 갖는 버킷 검색 ---//
 	private Bucket searchNode(int key) {
+		int hash = hashValue(key);
+	    Bucket p = table[hash];
 
+	    for (int i = 0; p.getStat() != Status.EMPTY && i < size; i++) {
+	        if (p.getStat() == Status.OCCUPIED && p.getData() == key)
+	            return p;
+	        hash = rehashValue(hash);
+	        p = table[hash];
+	    }
+	    return null;
 	}
 
 	//--- 키값이 key인 요소를 검색(데이터를 반환)---//
 	public int search(int key) {
-
+		Bucket p = searchNode(key);
+	    if (p != null)
+	        return p.getData();
+	    else
+	        return 0; // 또는 "찾지 못함"을 나타내는 다른 값
 	}
 
 	//--- 키값이 key인 데이터를 data의 요소로 추가 ---//
 	public int add(int data) {
+		if (search(data) != 0)
+	        return 1; // 데이터가 이미 존재함
 
+	    int hash = hashValue(data);
+	    Bucket p = table[hash];
+	    for (int i = 0; i < size; i++) {
+	        if (p.getStat() == Status.EMPTY || p.getStat() == Status.DELETED) {
+	            p.setData(data);
+	            p.setStat(Status.OCCUPIED);
+	            return 0; // 성공
+	        }
+	        hash = rehashValue(hash);
+	        p = table[hash];
+	    }
+	    return 2; // 해시 테이블이 가득 참
 	}
-
+	
 	//--- 키값이 key인 요소를 삭제 ---//
 	public int remove(int key) {
+		Bucket p = searchNode(key);
+	    if (p == null)
+	        return 1; // 찾지 못함
 
+	    p.setStat(Status.DELETED);
+	    return 0; // 성공
 	}
 
 	//--- 해시 테이블을 덤프(dump) ---//
 	public void dump() {
-
+		for (int i = 0; i < size; i++) {
+	        System.out.printf("%02d ", i);
+	        switch (table[i].getStat()) {
+	            case OCCUPIED:
+	                System.out.printf("%d\n", table[i].getData());
+	                break;
+	            case EMPTY:
+	                System.out.println("-- 비어있음 --");
+	                break;
+	            case DELETED:
+	                System.out.println("-- 삭제 완료 --");
+	                break;
+	        }
+	    }
 	}
 }
 
